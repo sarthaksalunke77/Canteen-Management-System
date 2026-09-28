@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – CMS Canteen Management System</title>
+  <meta name="description" content="Admin dashboard for managing canteen menu, orders, and reports.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="bg-orbs"></div>
+  <div id="toast-container"></div>
+
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-logo">⚙️</div>
+      <h1 class="login-title">Admin Login</h1>
+      <p class="login-subtitle">CMS Canteen Management System</p>
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-username">Username</label>
+          <input class="form-control" type="text" id="login-username" placeholder="admin" value="admin" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input class="form-control" type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="login-btn">
+          🔑 Login to Dashboard
+        </button>
+        <div class="text-center" style="margin-top:0.5rem;">
+          <small class="text-muted">Default: admin / admin123</small>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Layout (hidden until logged in) -->
+  <div id="admin-app" class="hidden">
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <div class="navbar-brand" style="font-size:1rem;">
+            <div class="logo-icon">🍽️</div>
+            <div>CMS <span style="color:var(--accent)">Admin</span></div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;" id="admin-username-display">—</div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="sidebar-nav-item active" data-view="dashboard" id="nav-dashboard">
+            <span class="nav-icon">📊</span> Dashboard
+          </div>
+          <div class="sidebar-nav-item" data-view="orders" id="nav-orders">
+            <span class="nav-icon">📋</span> Orders
+            <span id="pending-badge" style="margin-left:auto;background:var(--accent);color:white;font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:50px;display:none;"></span>
+          </div>
+          <div class="sidebar-nav-item" data-view="menu" id="nav-menu">
+            <span class="nav-icon">🍴</span> Menu Management
+          </div>
+          <div class="sidebar-nav-item" data-view="reports" id="nav-reports">
+            <span class="nav-icon">📈</span> Reports
+          </div>
+          <div class="sidebar-nav-item" data-view="qrcodes" id="nav-qrcodes">
+            <span class="nav-icon">📱</span> QR Codes
+          </div>
+        </nav>
+        <div style="padding:1rem 1.5rem;border-top:1px solid var(--glass-border);">
+          <button class="btn btn-secondary btn-full btn-sm" id="logout-btn">🚪 Logout</button>
+          <a href="/" class="btn btn-secondary btn-full btn-sm mt-1" style="text-decoration:none;display:flex;justify-content:center;">🏠 Customer View</a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="admin-content page-wrapper" id="admin-main">
+
+        <!-- ════ DASHBOARD VIEW ════ -->
+        <div id="view-dashboard" class="admin-view" style="padding:2rem;">
+          <div class="mb-3">
+            <h1 class="section-title">📊 <span class="highlight">Dashboard</span></h1>
+            <p class="section-subtitle" id="dash-date">Loading...</p>
+          </div>
+
+          <div class="stats-grid mb-3" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">📦</div>
+              <div class="stat-value" id="stat-today-orders">—</div>
+              <div class="stat-label">Today's Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-value" id="stat-today-revenue">—</div>
+              <div class="stat-label">Today's Revenue</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-value" id="stat-pending">—</div>
+              <div class="stat-label">Pending Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🍴</div>
+              <div class="stat-value" id="stat-menu-items">—</div>
+              <div class="stat-label">Menu Items</div>
+            </div>
+          </div>
+
+          <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:var(--text-secondary);">⚡ Recent Orders</h2>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#ID</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ ORDERS VIEW ════ -->
+        <div id="view-orders" class="admin-view hidden" style="padding:2rem;">
+          <div class="d-flex justify-between align-center mb-3" style="flex-wrap:wrap;gap:1rem;">
+            <div>
+              <h1 class="section-title">📋 <span class="highlight">Orders</span></h1>
+              <p class="section-subtitle">Manage and update all customer orders</p>
+            </div>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+              <select class="form-control" id="order-status-filter" style="width:160px;">
+                <option value="All">All Orders</option>
+                <option value="Received">Received</option>
+                <option value="Preparing">Preparing</option>
+                <option value="Ready">Ready</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+              <button class="btn btn-secondary" id="refresh-orders-btn">🔄 Refresh</button>
+            </div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Table / Type</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ MENU VIEW ════ -->
+        <div id="view-menu" class="admin-view hidden" style="padding:2rem;">
+          <div class="d-flex justify-between align-center mb-3" style="flex-wrap:wrap;gap:1rem;">
+            <div>
+              <h1 class="section-title">🍴 <span class="highlight">Menu</span></h1>
+              <p class="section-subtitle">Add, edit, or remove menu items</p>
+            </div>
+            <button class="btn btn-primary" id="add-item-btn">+ Add Item</button>
+          </div>
+
+          <!-- Add/Edit Item Form -->
+          <div class="card p-3 mb-3" id="menu-form-card" style="display:none;">
+            <h2 style="font-size:1rem;font-weight:700;margin-bottom:1.25rem;" id="menu-form-title">Add New Item</h2>
+            <form id="menu-item-form">
+              <input type="hidden" id="edit-item-id">
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;">
+                <div class="form-group">
+                  <label class="form-label" for="item-name">Name *</label>
+                  <input class="form-control" type="text" id="item-name" placeholder="e.g. Masala Chai" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="item-price">Price (₹) *</label>
+                  <input class="form-control" type="number" id="item-price" min="1" step="0.5" placeholder="e.g. 30" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="item-category">Category *</label>
+                  <select class="form-control" id="item-category" required>
+                    <option value="Meals">Meals</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Desserts">Desserts</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="item-emoji">Emoji</label>
+                  <input class="form-control" type="text" id="item-emoji" placeholder="e.g. ☕" maxlength="4" value="🍽️">
+                </div>
+                <div class="form-group" style="grid-column:1/-1;">
+                  <label class="form-label" for="item-description">Description</label>
+                  <input class="form-control" type="text" id="item-description" placeholder="Short description of the item">
+                </div>
+              </div>
+              <div style="display:flex;gap:0.75rem;">
+                <button type="submit" class="btn btn-primary" id="save-item-btn">💾 Save Item</button>
+                <button type="button" class="btn btn-secondary" id="cancel-form-btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Emoji</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="menu-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ REPORTS VIEW ════ -->
+        <div id="view-reports" class="admin-view hidden" style="padding:2rem;">
+          <div class="mb-3">
+            <h1 class="section-title">📈 <span class="highlight">Reports</span></h1>
+            <p class="section-subtitle">Analytics and business insights</p>
+          </div>
+
+          <div class="stats-grid mb-3">
+            <div class="stat-card">
+              <div class="stat-icon">📦</div>
+              <div class="stat-value" id="rep-total-orders">—</div>
+              <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💰</div>
+              <div class="stat-value" id="rep-total-revenue">—</div>
+              <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📅</div>
+              <div class="stat-value" id="rep-today-orders">—</div>
+              <div class="stat-label">Today's Orders</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💵</div>
+              <div class="stat-value" id="rep-today-revenue">—</div>
+              <div class="stat-label">Today's Revenue</div>
+            </div>
+          </div>
+
+          <div class="chart-grid mb-3">
+            <div class="chart-card">
+              <h3>Order Status Breakdown</h3>
+              <canvas id="status-chart" height="220"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>Menu Categories</h3>
+              <canvas id="category-chart" height="220"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════ QR CODES VIEW ════ -->
+        <div id="view-qrcodes" class="admin-view hidden" style="padding:2rem;">
+          <div class="mb-3">
+            <h1 class="section-title">📱 <span class="highlight">Table QR Codes</span></h1>
+            <p class="section-subtitle">Scan a QR code to instantly open the menu with the table pre-selected</p>
+          </div>
+
+          <!-- QR Config Bar -->
+          <div class="card p-3 mb-3">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:1.25rem;">
+              <div class="form-group" style="flex:1;min-width:180px;">
+                <label class="form-label" for="qr-base-url">Canteen URL (auto-detected)</label>
+                <input class="form-control" type="text" id="qr-base-url" placeholder="http://localhost:3000" readonly style="opacity:0.7;">
+              </div>
+              <div class="form-group" style="min-width:160px;">
+                <label class="form-label" for="qr-table-count">Number of Tables</label>
+                <select class="form-control" id="qr-table-count">
+                  <option value="6" selected>6 Tables</option>
+                  <option value="8">8 Tables</option>
+                  <option value="10">10 Tables</option>
+                  <option value="12">12 Tables</option>
+                  <option value="15">15 Tables</option>
+                  <option value="20">20 Tables</option>
+                </select>
+              </div>
+              <div class="form-group" style="min-width:160px;">
+                <label class="form-label" for="qr-size">QR Code Size (px)</label>
+                <select class="form-control" id="qr-size">
+                  <option value="180">Small (180px)</option>
+                  <option value="240" selected>Medium (240px)</option>
+                  <option value="300">Large (300px)</option>
+                </select>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.5rem;padding-top:1.5rem;">
+                <button class="btn btn-primary" id="generate-qr-btn" onclick="generateAllQRCodes()">🔄 Generate QR Codes</button>
+                <button class="btn btn-secondary" id="print-all-qr-btn" onclick="printAllQRCodes()">🖨️ Print All</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- QR Grid -->
+          <div id="qr-grid" class="qr-grid">
+            <div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text-muted);">
+              <p style="font-size:2.5rem;margin-bottom:1rem;">📱</p>
+              <p class="font-semibold">Click "Generate QR Codes" to create QR codes for your tables</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end admin-main -->
+    </div><!-- end admin-layout -->
+  </div><!-- end admin-app -->
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width:360px;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🗑️</div>
+      <h2 class="modal-title mb-1">Delete Item?</h2>
+      <p class="text-secondary mb-3" id="delete-modal-msg">This action cannot be undone.</p>
+      <div style="display:flex;gap:0.75rem;">
+        <button class="btn btn-secondary btn-full" id="delete-cancel-btn">Cancel</button>
+        <button class="btn btn-danger btn-full" id="delete-confirm-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/receipt.js"></script>
+  <script src="/admin.js"></script>
+</body>
+</html>

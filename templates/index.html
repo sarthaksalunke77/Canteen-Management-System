@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Canteen | Order Fresh Food Online</title>
+  <meta name="description" content="Order fresh, delicious meals from our canteen. Browse our menu, add to cart, and get hot food delivered to your seat.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+</head>
+<body>
+  <!-- Background -->
+  <div class="bg-orbs"></div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">🍽️</div>
+      <div>CMS <span>Canteen</span></div>
+    </a>
+    <div class="navbar-links">
+      <a href="/" class="active" id="nav-home">Menu</a>
+      <a href="/order-status" id="nav-track">Track Order</a>
+      <a href="/admin" id="nav-admin">Admin</a>
+    </div>
+    <button class="navbar-cart-btn" id="cart-toggle-btn" aria-label="Open Cart" title="View Cart">
+      🛒
+      <span class="cart-badge" id="cart-count-badge">0</span>
+    </button>
+  </nav>
+
+  <!-- Cart Overlay & Sidebar -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar" role="complementary" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <div class="cart-title">🛒 Your Order</div>
+      <button class="cart-close" id="cart-close-btn" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items-list">
+      <div class="cart-empty">
+        <span class="empty-icon">🍽️</span>
+        <p class="font-semibold">Your cart is empty</p>
+        <p class="text-muted" style="font-size:0.85rem">Add items from the menu to get started</p>
+      </div>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-value" id="cart-total">0</span>
+      </div>
+      <button class="btn btn-primary btn-full btn-lg" id="checkout-btn">
+        🎯 Place Order
+      </button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">📋 Complete Your Order</h2>
+        <button class="modal-close" id="checkout-modal-close" aria-label="Close">✕</button>
+      </div>
+      <form id="checkout-form">
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+          <div class="form-group">
+            <label class="form-label" for="customer-name">Full Name *</label>
+            <input class="form-control" type="text" id="customer-name" placeholder="Enter your name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="customer-phone">Phone (optional)</label>
+            <input class="form-control" type="tel" id="customer-phone" placeholder="e.g. 9876543210">
+          </div>
+
+          <!-- Order Type Toggle -->
+          <div class="form-group">
+            <label class="form-label">Order Type</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+              <label id="lbl-dine-in" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:white;font-weight:700;font-size:0.9rem;border:2px solid var(--accent);transition:var(--transition);">
+                <input type="radio" name="order_type" id="order-type-dine" value="Dine In" checked style="display:none;">🪑 Dine In
+              </label>
+              <label id="lbl-takeaway" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:var(--glass);color:var(--text-secondary);font-weight:700;font-size:0.9rem;border:2px solid var(--glass-border);transition:var(--transition);">
+                <input type="radio" name="order_type" id="order-type-takeaway" value="Take Away" style="display:none;">🥡 Take Away
+              </label>
+            </div>
+          </div>
+
+          <!-- Table Number -->
+          <div class="form-group" id="table-number-group">
+            <label class="form-label" for="table-number">Table Number *</label>
+            <select class="form-control" id="table-number">
+              <option value="">— Select Table —</option>
+              <option value="T1">Table 1</option>
+              <option value="T2">Table 2</option>
+              <option value="T3">Table 3</option>
+              <option value="T4">Table 4</option>
+              <option value="T5">Table 5</option>
+              <option value="T6">Table 6</option>
+              <option value="T7">Table 7</option>
+              <option value="T8">Table 8</option>
+              <option value="T9">Table 9</option>
+              <option value="T10">Table 10</option>
+              <option value="T11">Table 11</option>
+              <option value="T12">Table 12</option>
+              <option value="T13">Table 13</option>
+              <option value="T14">Table 14</option>
+              <option value="T15">Table 15</option>
+              <option value="T16">Table 16</option>
+              <option value="T17">Table 17</option>
+              <option value="T18">Table 18</option>
+              <option value="T19">Table 19</option>
+              <option value="T20">Table 20</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="payment-method">Payment Method</label>
+            <select class="form-control" id="payment-method">
+              <option value="Cash">💵 Cash on Counter</option>
+              <option value="UPI">📱 UPI / QR Code</option>
+              <option value="Card">💳 Debit / Credit Card</option>
+            </select>
+          </div>
+          <div id="order-summary-preview" style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1rem;">
+            <div class="d-flex justify-between mb-1" style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">
+              <span>Order Summary</span>
+              <span>Amount</span>
+            </div>
+            <div id="order-preview-items"></div>
+            <div class="divider"></div>
+            <div class="d-flex justify-between" style="font-size:1.1rem;font-weight:800;">
+              <span>Total</span>
+              <span style="color:var(--accent);">₹<span id="order-preview-total">0</span></span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="place-order-btn">
+            ✅ Confirm & Place Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal" style="text-align:center;">
+      <div style="font-size:4rem;margin-bottom:1rem;animation:float 2s ease-in-out infinite;">🎉</div>
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">Order Placed Successfully!</h2>
+      <p class="text-secondary mb-2">Your order has been received by the canteen.</p>
+
+      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1.25rem;margin:1.25rem 0;">
+        <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.25rem;">Your Order ID</div>
+        <div style="font-size:2.5rem;font-weight:900;color:var(--accent);" id="confirm-order-id">#00</div>
+        <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.25rem;">Use this to track your order</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <button class="btn btn-full" id="download-receipt-btn" style="background:linear-gradient(135deg,#10b981,#059669);color:white;font-weight:700;padding:0.85rem;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:0.95rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+          🧾 Download Payment Receipt
+        </button>
+        <a href="/order-status" class="btn btn-primary btn-full" id="track-order-link">📍 Track My Order</a>
+        <button class="btn btn-secondary btn-full" id="confirm-modal-close">Continue Ordering</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="page-wrapper">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <span class="hero-emoji">🍛</span>
+        <h1>
+          <span class="gradient-text">Student Canteen</span>
+        </h1>
+        <p>Fresh, affordable, and delicious food — prepared fresh every day for students and staff.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+            🍽️ Browse Menu
+          </button>
+          <a href="/order-status" class="btn btn-secondary btn-lg">📍 Track Order</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="val">50+</div><div class="lbl">Menu Items</div></div>
+          <div class="hero-stat"><div class="val">5 Min</div><div class="lbl">Avg Wait Time</div></div>
+          <div class="hero-stat"><div class="val">₹15</div><div class="lbl">Starting Price</div></div>
+          <div class="hero-stat"><div class="val">100%</div><div class="lbl">Fresh Daily</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu-section" style="padding:2rem 0 4rem;">
+      <div class="container">
+        <div class="d-flex justify-between align-center mb-3" style="flex-wrap:wrap;gap:1rem;">
+          <div>
+            <h2 class="section-title">Our <span class="highlight">Menu</span></h2>
+            <p class="section-subtitle">Tap any item to add it to your order</p>
+          </div>
+          <div id="menu-search-wrapper">
+            <input class="form-control" id="menu-search" type="search" placeholder="🔍  Search menu..." style="width:220px;">
+          </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-filter" id="category-filter">
+          <button class="category-btn active" data-category="All">All</button>
+          <button class="category-btn" data-category="Meals">🍛 Meals</button>
+          <button class="category-btn" data-category="Snacks">🥟 Snacks</button>
+          <button class="category-btn" data-category="Beverages">☕ Beverages</button>
+          <button class="category-btn" data-category="Desserts">🍦 Desserts</button>
+        </div>
+
+        <!-- Menu Grid -->
+        <div id="menu-grid" class="menu-grid">
+          <div style="grid-column:1/-1;display:flex;justify-content:center;padding:3rem 0;">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <div id="menu-no-results" class="hidden text-center" style="padding:3rem 0;color:var(--text-muted);">
+          <p style="font-size:3rem;margin-bottom:1rem;">🔍</p>
+          <p class="font-semibold" style="font-size:1.1rem;">No items found</p>
+          <p style="margin-top:0.5rem;">Try a different search or category</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top:1px solid var(--glass-border);padding:2rem 0;text-align:center;color:var(--text-muted);font-size:0.85rem;">
+    <div class="container">
+      <p>🍽️ <strong style="color:var(--text-secondary)">CMS Canteen</strong> — Canteen Management System</p>
+      <p class="mt-1">© 2024 Canteen Management System. Built for students, by students.</p>
+    </div>
+  </footer>
+
+  <script src="/receipt.js"></script>
+  <script src="/customer.js"></script>
+</body>
+</html>

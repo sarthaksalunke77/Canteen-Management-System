@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order – CMS Canteen Management System</title>
+  <meta name="description" content="Track your canteen order in real-time using your order ID.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+</head>
+<body>
+  <div class="bg-orbs"></div>
+  <div id="toast-container"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="navbar-brand">
+      <div class="logo-icon">🍽️</div>
+      <div>CMS <span>Canteen</span></div>
+    </a>
+    <div class="navbar-links">
+      <a href="/">Menu</a>
+      <a href="/order-status" class="active">Track Order</a>
+      <a href="/admin">Admin</a>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+    <div style="padding:4rem 0;">
+      <div class="container" style="max-width:640px;">
+
+        <!-- Header -->
+        <div class="text-center mb-3">
+          <div style="font-size:4rem;margin-bottom:1rem;animation:float 3s ease-in-out infinite;">📍</div>
+          <h1 class="section-title">Track Your <span class="highlight">Order</span></h1>
+          <p class="section-subtitle">Enter your order ID to see real-time status</p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="card p-3 mb-3">
+          <div style="display:flex;gap:0.75rem;">
+            <input
+              class="form-control"
+              type="number"
+              id="order-id-input"
+              placeholder="Enter Order ID (e.g. 5)"
+              min="1"
+              style="flex:1;"
+              autofocus
+            >
+            <button class="btn btn-primary" id="track-btn" style="white-space:nowrap;">
+              🔍 Track
+            </button>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="order-not-found" class="hidden" style="text-align:center;padding:2rem;color:var(--text-muted);">
+          <p style="font-size:2.5rem;margin-bottom:1rem;">🤔</p>
+          <p class="font-semibold" style="font-size:1.1rem;color:var(--text-secondary);">Order Not Found</p>
+          <p style="margin-top:0.5rem;font-size:0.9rem;">Please double-check your order ID.</p>
+        </div>
+
+        <!-- Order Card -->
+        <div id="order-result" class="hidden">
+          <div class="card p-3">
+            <!-- Order Header -->
+            <div class="d-flex justify-between align-center mb-2">
+              <div>
+                <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Order ID</div>
+                <div style="font-size:1.8rem;font-weight:900;color:var(--accent);" id="res-order-id">#0000</div>
+              </div>
+              <div id="res-status-badge"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Customer Info -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;">
+              <div>
+                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;">Customer</div>
+                <div class="font-semibold" id="res-customer-name">—</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;">Payment</div>
+                <div class="font-semibold" id="res-payment">—</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;">Order Time</div>
+                <div class="font-semibold" id="res-time">—</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin-bottom:0.15rem;">Total</div>
+                <div class="font-semibold text-accent" id="res-total">—</div>
+              </div>
+            </div>
+
+            <!-- Items -->
+            <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;">
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.75rem;">Ordered Items</div>
+              <div id="res-items-list"></div>
+            </div>
+
+            <!-- Status Stepper -->
+            <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:1rem;">Order Progress</div>
+            <div class="status-stepper" id="status-stepper"></div>
+          </div>
+
+          <!-- Refresh Note -->
+          <p class="text-center text-muted mt-2" style="font-size:0.82rem;">
+            🔄 Auto-refreshes every 15 seconds &nbsp;|&nbsp;
+            <button onclick="trackCurrentOrder()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:inherit;font-size:0.82rem;">Refresh now</button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top:1px solid var(--glass-border);padding:2rem 0;text-align:center;color:var(--text-muted);font-size:0.85rem;">
+    <div class="container">
+      <p>🍽️ <strong style="color:var(--text-secondary)">CMS Canteen</strong> — Canteen Management System</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Toast ──────────────────────────────────────────────────
+    function showToast(msg, type='info') {
+      const icons = { success:'✅', error:'❌', info:'ℹ️', warning:'⚠️' };
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span>`;
+      document.getElementById('toast-container').appendChild(t);
+      setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 350); }, 3000);
+    }
+
+    const STEPS = [
+      { status: 'Received',  icon: '📥', label: 'Order Received',  desc: 'Your order has been placed and is queued.' },
+      { status: 'Preparing', icon: '👨‍🍳', label: 'Being Prepared', desc: 'The kitchen is cooking your food.' },
+      { status: 'Ready',     icon: '✅', label: 'Ready to Collect', desc: 'Your order is ready! Please collect from the counter.' },
+      { status: 'Delivered', icon: '🎉', label: 'Delivered',        desc: 'Order completed. Enjoy your meal!' },
+    ];
+
+    const STATUS_ORDER = ['Received', 'Preparing', 'Ready', 'Delivered'];
+
+    function badgeHtml(status) {
+      const cls = `badge badge-${status.toLowerCase()}`;
+      return `<span class="${cls}">${status}</span>`;
+    }
+
+    function formatTime(dt) {
+      return new Date(dt).toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+    }
+
+    let currentOrderId = null;
+    let refreshInterval = null;
+
+    async function trackOrder(orderId) {
+      if (!orderId || isNaN(orderId) || orderId < 1) {
+        showToast('Please enter a valid Order ID', 'warning');
+        return;
+      }
+
+      currentOrderId = orderId;
+      document.getElementById('track-btn').disabled = true;
+      document.getElementById('track-btn').textContent = 'Searching...';
+
+      try {
+        const resp = await fetch(`/api/orders/${orderId}`);
+        if (resp.status === 404) {
+          document.getElementById('order-result').classList.add('hidden');
+          document.getElementById('order-not-found').classList.remove('hidden');
+          return;
+        }
+        if (!resp.ok) throw new Error();
+        const order = await resp.json();
+
+        document.getElementById('order-not-found').classList.add('hidden');
+        document.getElementById('order-result').classList.remove('hidden');
+        renderOrder(order);
+      } catch {
+        showToast('Failed to track order. Try again.', 'error');
+      } finally {
+        document.getElementById('track-btn').disabled = false;
+        document.getElementById('track-btn').innerHTML = '🔍 Track';
+      }
+    }
+
+    function renderOrder(order) {
+      document.getElementById('res-order-id').textContent = `#${String(order.id).padStart(4,'0')}`;
+      document.getElementById('res-status-badge').innerHTML = badgeHtml(order.status);
+      document.getElementById('res-customer-name').textContent = order.customer_name;
+      document.getElementById('res-payment').textContent = order.payment_method || 'Cash';
+      document.getElementById('res-time').textContent = formatTime(order.created_at);
+      document.getElementById('res-total').textContent = `₹${order.total}`;
+
+      // Items
+      const items = order.items || [];
+      document.getElementById('res-items-list').innerHTML = items.map(i => `
+        <div style="display:flex;justify-content:space-between;padding:0.35rem 0;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span>${i.emoji || ''} ${i.name} <span style="color:var(--text-muted);">×${i.qty}</span></span>
+          <span style="color:var(--accent);font-weight:600;">₹${i.price * i.qty}</span>
+        </div>
+      `).join('') + `
+        <div style="display:flex;justify-content:space-between;padding:0.5rem 0 0;font-weight:800;">
+          <span>Total</span>
+          <span style="color:var(--accent);">₹${order.total}</span>
+        </div>`;
+
+      // Stepper
+      const currentStepIdx = order.status === 'Cancelled'
+        ? -1
+        : STATUS_ORDER.indexOf(order.status);
+
+      const stepsHtml = order.status === 'Cancelled'
+        ? `<div style="text-align:center;padding:1.5rem;color:var(--danger);">
+             <p style="font-size:2rem;">❌</p>
+             <p class="font-semibold">Order Cancelled</p>
+             <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem;">Please contact the canteen for more info.</p>
+           </div>`
+        : STEPS.map((step, idx) => {
+            const isCompleted = idx < currentStepIdx;
+            const isActive    = idx === currentStepIdx;
+            const cls = isCompleted ? 'completed' : (isActive ? 'active' : '');
+            return `
+              <div class="step ${cls}">
+                <div class="step-dot">${isCompleted ? '✓' : step.icon}</div>
+                <div class="step-content">
+                  <div class="step-title" style="${isActive ? 'color:var(--accent);' : isCompleted ? '' : 'color:var(--text-muted);'}">${step.label}</div>
+                  <div class="step-desc">${isActive || isCompleted ? step.desc : ''}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+      document.getElementById('status-stepper').innerHTML = stepsHtml;
+    }
+
+    async function trackCurrentOrder() {
+      if (currentOrderId) await trackOrder(currentOrderId);
+    }
+
+    // Button listener
+    document.getElementById('track-btn').addEventListener('click', () => {
+      const id = parseInt(document.getElementById('order-id-input').value);
+      trackOrder(id);
+
+      // Clear old interval and set new one
+      if (refreshInterval) clearInterval(refreshInterval);
+      refreshInterval = setInterval(trackCurrentOrder, 15000);
+    });
+
+    document.getElementById('order-id-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('track-btn').click();
+    });
+
+    // Auto-load from URL param
+    const params = new URLSearchParams(window.location.search);
+    const urlId  = params.get('id');
+    if (urlId) {
+      document.getElementById('order-id-input').value = urlId;
+      document.getElementById('track-btn').click();
+    }
+  </script>
+</body>
+</html>
