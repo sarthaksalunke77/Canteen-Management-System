@@ -11,7 +11,7 @@ let fallbackMenu = [
   { id: 7, name: 'Paneer Roll', description: 'Warm flatbread rolled with marinated paneer and tangy chutney.', price: 60, category: 'Snacks', image_url: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop', image_emoji: '🌯', available: 1 },
   { id: 8, name: 'Masala Chai', description: 'Cardamom and ginger infused traditional hot brewed Indian tea.', price: 15, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
   { id: 9, name: 'Veg Thali', description: 'Complete traditional meal with dal, seasonal sabzi, roti, rice & salad.', price: 80, category: 'Meals', image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop', image_emoji: '🍱', available: 1 },
-  { id: 10, name: 'Gulab Jamun (2 pcs)', description: 'Melt-in-mouth soft dumplings immersed in rose-cardamom sugar syrup.', price: 30, category: 'Desserts', image_url: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop', image_emoji: '🍨', available: 1 },
+  { id: 10, name: 'Gulab Jamun (2 pcs)', description: 'Melt-in-mouth soft dumplings immersed in rose-cardamom sugar syrup.', price: 30, category: 'Desserts', image_url: '/images/gulab_jamun.jpg', image_emoji: '🍮', available: 1 },
   { id: 11, name: 'Green Tea', description: 'Antioxidant-rich soothing green tea infused with organic whole leaves.', price: 20, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
   { id: 12, name: 'Sweet Lassi', description: 'Traditional creamy Punjabi yogurt lassi topped with saffron & cardamom.', price: 35, category: 'Beverages', image_url: 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?w=500&auto=format&fit=crop', image_emoji: '🥛', available: 1 }
 ];
@@ -73,9 +73,10 @@ const FOOD_IMAGE_MAP = {
   'vada pav': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
   'pizza': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop',
   'thali': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop',
-  'jamun': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
-  'dessert': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
-  'sweet': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'gulab jamun': '/images/gulab_jamun.jpg',
+  'jamun': '/images/gulab_jamun.jpg',
+  'dessert': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop',
+  'sweet': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop',
   'ice cream': 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=500&auto=format&fit=crop',
   'cake': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop',
 
@@ -135,8 +136,10 @@ function getItemEmoji(name, category, existingEmoji) {
 }
 
 function getItemImageUrl(name, category, existingUrl) {
-  if (existingUrl && typeof existingUrl === 'string' && existingUrl.startsWith('http')) {
-    return existingUrl;
+  if (existingUrl && typeof existingUrl === 'string' && (existingUrl.startsWith('http') || existingUrl.startsWith('/'))) {
+    if (!existingUrl.includes('photo-1610057099443-fde8c4d50f91')) {
+      return existingUrl;
+    }
   }
   const n = (name || '').toLowerCase();
   const c = (category || '').toLowerCase();

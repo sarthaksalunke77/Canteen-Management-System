@@ -107,9 +107,10 @@ const FOOD_IMAGE_MAP = {
   'vada pav': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
   'pizza': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop',
   'thali': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop',
-  'jamun': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
-  'dessert': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
-  'sweet': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'gulab jamun': '/images/gulab_jamun.jpg',
+  'jamun': '/images/gulab_jamun.jpg',
+  'dessert': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop',
+  'sweet': 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop',
   'ice cream': 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=500&auto=format&fit=crop',
   'cake': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop',
 
@@ -121,8 +122,10 @@ const FOOD_IMAGE_MAP = {
 };
 
 function getItemImage(item) {
-  if (item && item.image_url && item.image_url.startsWith('http')) {
-    return item.image_url;
+  if (item && item.image_url && (item.image_url.startsWith('http') || item.image_url.startsWith('/'))) {
+    if (!item.image_url.includes('photo-1610057099443-fde8c4d50f91')) {
+      return item.image_url;
+    }
   }
   const name = (item && item.name ? item.name : '').toLowerCase();
   const cat  = (item && item.category ? item.category : '').toLowerCase();
