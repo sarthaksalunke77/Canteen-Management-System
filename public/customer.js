@@ -459,3 +459,10 @@ function applyQRPreFill() {
 })();
 c o n s t   s o c k e t   =   i o ( ) ;   s o c k e t . o n ( ' o r d e r _ s t a t u s _ u p d a t e ' ,   ( d a t a )   = >   {   f e t c h M y O r d e r s ( ) ;   } ) ;  
  
+
+try {
+  const socket = io();
+  socket.on('order_status_update', () => {
+    if (typeof fetchMenu === 'function') fetchMenu();
+  });
+} catch (e) {}

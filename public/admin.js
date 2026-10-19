@@ -684,3 +684,14 @@ function printAllQRCodes() {
 }
 c o n s t   s o c k e t   =   i o ( ) ;   s o c k e t . o n ( ' n e w _ o r d e r ' ,   ( )   = >   {   f e t c h L i v e O r d e r s ( ) ;   f e t c h D a s h b o a r d ( ) ;   } ) ;   s o c k e t . o n ( ' o r d e r _ s t a t u s _ u p d a t e ' ,   ( )   = >   {   f e t c h L i v e O r d e r s ( ) ;   } ) ;  
  
+
+try {
+  const socket = io();
+  socket.on('new_order', () => {
+    if (typeof loadOrders === 'function') loadOrders();
+    if (typeof loadDashboard === 'function') loadDashboard();
+  });
+  socket.on('order_status_update', () => {
+    if (typeof loadOrders === 'function') loadOrders();
+  });
+} catch (e) {}

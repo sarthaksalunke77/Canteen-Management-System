@@ -1,8 +1,14 @@
 const jwt = require('jsonwebtoken');
 
 exports.protect = (req, res, next) => {
+    // 1. Check Session
+    if (req.session && req.session.isAdmin) {
+        req.user = { id: 1, role: 'admin', name: req.session.adminUser || 'Admin' };
+        return next();
+    }
+
+    // 2. Check JWT Bearer Header
     let token;
-    
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
     }
@@ -28,3 +34,4 @@ exports.authorize = (...roles) => {
         next();
     };
 };
+
