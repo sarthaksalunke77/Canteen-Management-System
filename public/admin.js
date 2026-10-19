@@ -305,10 +305,14 @@ document.getElementById('add-item-btn').addEventListener('click', () => {
 
 // ── Automatic Emoji & Category Detection based on Item Name ──
 const foodEmojiKeywords = [
-  // Beverages
-  { keywords: ['chai', 'tea', 'chay', 'cutting'], emoji: '🍵', category: 'Beverages' },
-  { keywords: ['coffee', 'coffe', 'cappuccino', 'espresso', 'latte', 'mocha', 'frappe'], emoji: '☕', category: 'Beverages' },
-  { keywords: ['juice', 'shake', 'smoothie', 'soda', 'drink', 'lemonade', 'lime', 'cola', 'pepsi', 'sprite', 'sharbat', 'lassi', 'badam milk'], emoji: '🍹', category: 'Beverages' },
+  // Beverages (Specific matches before generic matches)
+  { keywords: ['green tea', 'herbal tea', 'matcha'], emoji: '🍵', category: 'Beverages' },
+  { keywords: ['lemon tea', 'ice tea', 'iced tea'], emoji: '🍋', category: 'Beverages' },
+  { keywords: ['cold coffee', 'frappe', 'iced coffee'], emoji: '🧋', category: 'Beverages' },
+  { keywords: ['lassi', 'mango lassi', 'chaas', 'buttermilk'], emoji: '🥛', category: 'Beverages' },
+  { keywords: ['chai', 'masala chai', 'cutting chai', 'tea', 'chay', 'cutting'], emoji: '☕', category: 'Tea & Coffee' },
+  { keywords: ['coffee', 'coffe', 'cappuccino', 'espresso', 'latte', 'mocha'], emoji: '☕', category: 'Tea & Coffee' },
+  { keywords: ['juice', 'shake', 'smoothie', 'soda', 'drink', 'lemonade', 'lime', 'cola', 'pepsi', 'sprite', 'sharbat', 'badam milk'], emoji: '🍹', category: 'Beverages' },
   { keywords: ['water', 'mineral water'], emoji: '💧', category: 'Beverages' },
 
   // Snacks & Fast food
