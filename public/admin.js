@@ -303,6 +303,58 @@ document.getElementById('add-item-btn').addEventListener('click', () => {
   document.getElementById('menu-form-card').scrollIntoView({ behavior: 'smooth' });
 });
 
+// ── Automatic Emoji & Category Detection based on Item Name ──
+const foodEmojiKeywords = [
+  // Beverages
+  { keywords: ['chai', 'tea', 'chay', 'cutting'], emoji: '🍵', category: 'Beverages' },
+  { keywords: ['coffee', 'coffe', 'cappuccino', 'espresso', 'latte', 'mocha', 'frappe'], emoji: '☕', category: 'Beverages' },
+  { keywords: ['juice', 'shake', 'smoothie', 'soda', 'drink', 'lemonade', 'lime', 'cola', 'pepsi', 'sprite', 'sharbat', 'lassi', 'badam milk'], emoji: '🍹', category: 'Beverages' },
+  { keywords: ['water', 'mineral water'], emoji: '💧', category: 'Beverages' },
+
+  // Snacks & Fast food
+  { keywords: ['samosa', 'kachori', 'pakoda', 'bhajiya', 'spring roll', 'momos', 'dimsum'], emoji: '🥟', category: 'Snacks' },
+  { keywords: ['burger', 'vadapav', 'vada pav', 'slider'], emoji: '🍔', category: 'Snacks' },
+  { keywords: ['pizza'], emoji: '🍕', category: 'Snacks' },
+  { keywords: ['sandwich', 'toast', 'panini', 'grilled cheese'], emoji: '🥪', category: 'Snacks' },
+  { keywords: ['fries', 'french fries', 'chips', 'nachos'], emoji: '🍟', category: 'Snacks' },
+  { keywords: ['maggi', 'noodle', 'noodles', 'chowmein', 'ramen', 'pasta', 'macaroni'], emoji: '🍜', category: 'Snacks' },
+  { keywords: ['dosa', 'idli', 'vada', 'uttapam', 'medu vada'], emoji: '🥞', category: 'Snacks' },
+  { keywords: ['roll', 'frankie', 'wrap', 'shawarma', 'burrito'], emoji: '🌯', category: 'Snacks' },
+  { keywords: ['bhelpuri', 'sevpuri', 'chaat', 'panipuri', 'golgappa'], emoji: '🥣', category: 'Snacks' },
+  { keywords: ['popcorn'], emoji: '🍿', category: 'Snacks' },
+
+  // Meals
+  { keywords: ['thali', 'roti', 'chapati', 'paratha', 'naan', 'kulcha', 'dal', 'chole', 'rajma', 'curry'], emoji: '🍱', category: 'Meals' },
+  { keywords: ['biryani', 'pulao', 'chicken', 'fish', 'egg', 'mutton', 'kebab', 'tandoori'], emoji: '🍗', category: 'Meals' },
+  { keywords: ['rice', 'fried rice', 'jeera rice'], emoji: '🍚', category: 'Meals' },
+  { keywords: ['paneer', 'subzi', 'sabzi', 'gravy', 'masala'], emoji: '🍛', category: 'Meals' },
+  { keywords: ['soup'], emoji: '🍲', category: 'Meals' },
+  { keywords: ['salad'], emoji: '🥗', category: 'Meals' },
+
+  // Desserts
+  { keywords: ['ice cream', 'icecream', 'kulfi', 'sundae', 'falooda'], emoji: '🍨', category: 'Desserts' },
+  { keywords: ['cake', 'pastry', 'brownie', 'muffin', 'cupcake'], emoji: '🍰', category: 'Desserts' },
+  { keywords: ['gulab jamun', 'rasgulla', 'jalebi', 'sweet', 'mithai', 'halwa', 'laddu', 'peda', 'kheer'], emoji: '🍮', category: 'Desserts' },
+  { keywords: ['chocolate', 'choc'], emoji: '🍫', category: 'Desserts' },
+  { keywords: ['cookie', 'biscuit'], emoji: '🍪', category: 'Desserts' },
+  { keywords: ['donut', 'doughnut'], emoji: '🍩', category: 'Desserts' },
+];
+
+document.getElementById('item-name').addEventListener('input', (e) => {
+  const val = e.target.value.toLowerCase().trim();
+  if (!val) return;
+  for (const item of foodEmojiKeywords) {
+    if (item.keywords.some(k => val.includes(k))) {
+      document.getElementById('item-emoji').value = item.emoji;
+      const editId = document.getElementById('edit-item-id').value;
+      if (!editId && item.category) {
+        document.getElementById('item-category').value = item.category;
+      }
+      break;
+    }
+  }
+});
+
 document.getElementById('cancel-form-btn').addEventListener('click', () => {
   document.getElementById('menu-form-card').style.display = 'none';
 });
