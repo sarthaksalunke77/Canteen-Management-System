@@ -25,10 +25,18 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
+const session = require('express-session');
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+    secret: process.env.JWT_SECRET || 'cms-secret-key-2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+}));
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../public')));
