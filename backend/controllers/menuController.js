@@ -8,8 +8,8 @@ let fallbackMenu = [
   { id: 4, name: 'Veg Noodles', description: 'Wok-tossed noodles with crunchy vegetables and oriental sauces.', price: 60, category: 'Chinese', image_url: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop', image_emoji: '🍜', available: 1 },
   { id: 5, name: 'Cold Coffee', description: 'Creamy iced espresso blended with rich chocolate and vanilla.', price: 40, category: 'Beverages', image_url: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop', image_emoji: '☕', available: 1 },
   { id: 6, name: 'Veg Sandwich', description: 'Tri-layer toasted sandwich stuffed with fresh vegetables & cheese.', price: 50, category: 'Snacks', image_url: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop', image_emoji: '🥪', available: 1 },
-  { id: 7, name: 'Paneer Roll', description: 'Warm flatbread rolled with marinated paneer and tangy chutney.', price: 60, category: 'Snacks', image_url: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop', image_emoji: '🌯', available: 1 },
-  { id: 8, name: 'Masala Chai', description: 'Cardamom and ginger infused traditional hot brewed Indian tea.', price: 15, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
+  { id: 7, name: 'Paneer Roll', description: 'Warm flatbread rolled with marinated paneer and tangy chutney.', price: 60, category: 'Snacks', image_url: '/images/paneer_roll.jpg', image_emoji: '🌯', available: 1 },
+  { id: 8, name: 'Masala Chai', description: 'Cardamom and ginger infused traditional hot brewed Indian tea.', price: 15, category: 'Tea & Coffee', image_url: '/images/masala_chai.jpg', image_emoji: '☕', available: 1 },
   { id: 9, name: 'Veg Thali', description: 'Complete traditional meal with dal, seasonal sabzi, roti, rice & salad.', price: 80, category: 'Meals', image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop', image_emoji: '🍱', available: 1 },
   { id: 10, name: 'Gulab Jamun (2 pcs)', description: 'Melt-in-mouth soft dumplings immersed in rose-cardamom sugar syrup.', price: 30, category: 'Desserts', image_url: '/images/gulab_jamun.jpg', image_emoji: '🍮', available: 1 },
   { id: 11, name: 'Green Tea', description: 'Antioxidant-rich soothing green tea infused with organic whole leaves.', price: 20, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
@@ -22,10 +22,10 @@ const FOOD_IMAGE_MAP = {
   'lemon tea': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop',
   'iced tea': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop',
   'black tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'masala chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'cutting chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'masala chai': '/images/masala_chai.jpg',
+  'cutting chai': '/images/masala_chai.jpg',
+  'chai': '/images/masala_chai.jpg',
+  'tea': '/images/masala_chai.jpg',
 
   // 2. Specific Coffee variations (Checked before generic 'coffee')
   'cold coffee': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
@@ -65,9 +65,10 @@ const FOOD_IMAGE_MAP = {
   'chinese': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
   'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
   'toast': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
-  'roll': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
-  'wrap': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
-  'frankie': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
+  'paneer roll': '/images/paneer_roll.jpg',
+  'roll': '/images/paneer_roll.jpg',
+  'wrap': '/images/paneer_roll.jpg',
+  'frankie': '/images/paneer_roll.jpg',
   'paneer': 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop',
   'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop',
   'vada pav': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
@@ -137,7 +138,11 @@ function getItemEmoji(name, category, existingEmoji) {
 
 function getItemImageUrl(name, category, existingUrl) {
   if (existingUrl && typeof existingUrl === 'string' && (existingUrl.startsWith('http') || existingUrl.startsWith('/'))) {
-    if (!existingUrl.includes('photo-1610057099443-fde8c4d50f91')) {
+    const isOutdated = 
+      existingUrl.includes('photo-1610057099443-fde8c4d50f91') || // old chicken photo
+      existingUrl.includes('photo-1626777552726-4a6b54c97e46') || // old thali photo for roll
+      existingUrl.includes('photo-1576092768241-dec231879fc3');   // old tea bag photo for chai
+    if (!isOutdated) {
       return existingUrl;
     }
   }

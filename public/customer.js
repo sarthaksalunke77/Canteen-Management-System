@@ -59,10 +59,10 @@ const FOOD_IMAGE_MAP = {
   'lemon tea': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop',
   'iced tea': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop',
   'black tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'masala chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'cutting chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
-  'tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'masala chai': '/images/masala_chai.jpg',
+  'cutting chai': '/images/masala_chai.jpg',
+  'chai': '/images/masala_chai.jpg',
+  'tea': '/images/masala_chai.jpg',
 
   // 2. Specific Coffee variations (Checked before generic 'coffee')
   'cold coffee': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
@@ -99,9 +99,10 @@ const FOOD_IMAGE_MAP = {
   'chinese': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
   'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
   'toast': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
-  'roll': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
-  'wrap': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
-  'frankie': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
+  'paneer roll': '/images/paneer_roll.jpg',
+  'roll': '/images/paneer_roll.jpg',
+  'wrap': '/images/paneer_roll.jpg',
+  'frankie': '/images/paneer_roll.jpg',
   'paneer': 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop',
   'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop',
   'vada pav': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
@@ -123,7 +124,9 @@ const FOOD_IMAGE_MAP = {
 
 function getItemImage(item) {
   if (item && item.image_url && (item.image_url.startsWith('http') || item.image_url.startsWith('/'))) {
-    if (!item.image_url.includes('photo-1610057099443-fde8c4d50f91')) {
+    if (!item.image_url.includes('photo-1610057099443-fde8c4d50f91') &&
+        !item.image_url.includes('photo-1626777552726-4a6b54c97e46') &&
+        !item.image_url.includes('photo-1576092768241-dec231879fc3')) {
       return item.image_url;
     }
   }
