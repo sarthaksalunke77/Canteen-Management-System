@@ -351,6 +351,215 @@
           </div>
         </aside>
       </div>
+    <!-- ════ 3. FACILITIES SECTION ════ -->
+    <section id="facilities" class="cc-facilities-section">
+      <div class="cc-container">
+        <div class="cc-section-header">
+          <div class="cc-badge-pill">CAMPUS AMENITIES</div>
+          <h2 class="cc-section-title">Canteen <span class="highlight">Facilities</span></h2>
+          <p class="cc-section-subtitle">Comfortable, clean, and modern amenities designed for students and faculty</p>
+        </div>
+
+        <div class="cc-facilities-grid">
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#fff7ed;color:#ea580c;">❄️</div>
+            <h3 class="cc-facility-title">Air-Conditioned Dining</h3>
+            <p class="cc-facility-desc">Spacious, air-conditioned dining area with ergonomic seating capacity for over 250+ students and professors.</p>
+            <span class="cc-facility-tag">250+ Seats</span>
+          </div>
+
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#f0fdf4;color:#16a34a;">🧼</div>
+            <h3 class="cc-facility-title">100% Hygienic Kitchen</h3>
+            <p class="cc-facility-desc">FSSAI compliant modern commercial kitchen cleaned and sanitized multiple times throughout the day.</p>
+            <span class="cc-facility-tag">FSSAI Certified</span>
+          </div>
+
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#f0f9ff;color:#0284c7;">📱</div>
+            <h3 class="cc-facility-title">Instant Table QR Order</h3>
+            <p class="cc-facility-desc">Scan the QR code at your dining table to order right from your smartphone without waiting in long lines.</p>
+            <span class="cc-facility-tag">Contactless</span>
+          </div>
+
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#eff6ff;color:#3b82f6;">📶</div>
+            <h3 class="cc-facility-title">High-Speed Wi-Fi</h3>
+            <p class="cc-facility-desc">Complimentary campus Wi-Fi connectivity throughout the canteen for study sessions and quick breaks.</p>
+            <span class="cc-facility-tag">Free 5G/Wi-Fi</span>
+          </div>
+
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#ecfdf5;color:#059669;">💧</div>
+            <h3 class="cc-facility-title">Pure UV + RO Water</h3>
+            <p class="cc-facility-desc">Multi-stage UV and RO purified drinking water stations regularly tested for safety and health standards.</p>
+            <span class="cc-facility-tag">Purified Water</span>
+          </div>
+
+          <div class="cc-facility-card">
+            <div class="cc-facility-icon-wrap" style="background:#fdf4ff;color:#9333ea;">💳</div>
+            <h3 class="cc-facility-title">Cashless & UPI Payments</h3>
+            <p class="cc-facility-desc">Pay instantly using any UPI app (Google Pay, PhonePe, Paytm), debit/credit card, or student wallet.</p>
+            <span class="cc-facility-tag">Instant Billing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 4. FEEDBACK SECTION ════ -->
+    <section id="feedback" class="cc-feedback-section">
+      <div class="cc-container">
+        <div class="cc-section-header">
+          <div class="cc-badge-pill">STUDENT VOICE</div>
+          <h2 class="cc-section-title">Student <span class="highlight">Feedback & Reviews</span></h2>
+          <p class="cc-section-subtitle">Help us improve your dining experience! Share your feedback or read what other students say.</p>
+        </div>
+
+        <div class="cc-feedback-grid">
+          <!-- Left: Feedback Form -->
+          <div class="cc-feedback-form-box">
+            <h3 class="cc-feedback-form-title">📝 Share Your Experience</h3>
+            <p class="cc-feedback-form-sub">Your feedback goes directly to our canteen management team.</p>
+
+            <form id="feedback-form">
+              <div class="form-group" style="margin-bottom:0.75rem;">
+                <label class="form-label" for="fb-name">Full Name *</label>
+                <input type="text" class="form-control" id="fb-name" placeholder="Enter your name" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom:0.75rem;">
+                <label class="form-label" for="fb-role">Role / Department</label>
+                <select class="form-control" id="fb-role">
+                  <option value="Student">Student</option>
+                  <option value="Faculty">Faculty / Professor</option>
+                  <option value="Staff">College Staff</option>
+                  <option value="Visitor">Visitor</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:0.75rem;">
+                <label class="form-label">Your Rating *</label>
+                <div class="cc-star-group" id="star-rating-group">
+                  <span class="cc-star-icon" data-val="1">★</span>
+                  <span class="cc-star-icon" data-val="2">★</span>
+                  <span class="cc-star-icon" data-val="3">★</span>
+                  <span class="cc-star-icon" data-val="4">★</span>
+                  <span class="cc-star-icon active" data-val="5">★</span>
+                  <span class="cc-star-text" id="rating-text">5.0 — Excellent!</span>
+                </div>
+                <input type="hidden" id="fb-rating" value="5">
+              </div>
+
+              <div class="form-group" style="margin-bottom:0.75rem;">
+                <label class="form-label" for="fb-category">Category</label>
+                <select class="form-control" id="fb-category">
+                  <option value="Food Quality">Food Quality & Taste</option>
+                  <option value="Service Speed">Service Speed</option>
+                  <option value="Cleanliness">Hygiene & Cleanliness</option>
+                  <option value="Pricing">Affordable Pricing</option>
+                  <option value="General">General Suggestion</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label class="form-label" for="fb-message">Your Comments / Suggestions *</label>
+                <textarea class="form-control" id="fb-message" rows="3" placeholder="Tell us what you liked or how we can improve..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full btn-lg" id="fb-submit-btn">
+                🚀 Submit Feedback
+              </button>
+            </form>
+          </div>
+
+          <!-- Right: Feedback Ratings & Reviews -->
+          <div class="cc-feedback-display">
+            <!-- Overall Score Card -->
+            <div class="cc-rating-summary-card">
+              <div class="cc-score-left">
+                <div class="cc-score-number">4.8</div>
+                <div class="cc-score-stars">★★★★★</div>
+                <div class="cc-score-note">Based on 150+ reviews</div>
+              </div>
+              <div class="cc-score-bars">
+                <div class="cc-metric-row">
+                  <span class="cc-metric-name">Taste & Quality</span>
+                  <div class="cc-metric-track"><div class="cc-metric-fill" style="width:96%;"></div></div>
+                  <span class="cc-metric-val">4.9</span>
+                </div>
+                <div class="cc-metric-row">
+                  <span class="cc-metric-name">Hygiene</span>
+                  <div class="cc-metric-track"><div class="cc-metric-fill" style="width:94%;"></div></div>
+                  <span class="cc-metric-val">4.8</span>
+                </div>
+                <div class="cc-metric-row">
+                  <span class="cc-metric-name">Speed</span>
+                  <div class="cc-metric-track"><div class="cc-metric-fill" style="width:90%;"></div></div>
+                  <span class="cc-metric-val">4.6</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- List of Reviews -->
+            <div class="cc-reviews-container">
+              <div class="cc-reviews-head">
+                <h4>Recent Student Reviews</h4>
+                <span class="cc-live-badge">🟢 Real-time</span>
+              </div>
+              <div id="feedback-list" class="cc-reviews-list">
+                <div style="text-align:center;padding:1.5rem;color:#94a3b8;">
+                  <div class="spinner" style="margin:0 auto 0.5rem;"></div>
+                  Loading reviews...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 5. CONTACT SECTION ════ -->
+    <section id="contact" class="cc-contact-section">
+      <div class="cc-container">
+        <div class="cc-contact-box">
+          <div class="cc-contact-info">
+            <div class="cc-badge-pill" style="background:rgba(255,255,255,0.15);color:white;">CAMPUS LOCATION</div>
+            <h3 class="cc-contact-title">Visit the College Canteen</h3>
+            <p class="cc-contact-desc">Located at the Central Quadrangle, Ground Floor, Academic Block B. Open every day for students and faculty members.</p>
+            <div class="cc-contact-items">
+              <div class="cc-c-item">
+                <span class="cc-c-icon">📍</span>
+                <div>
+                  <strong>Location</strong>
+                  <div>Ground Floor, Block B, Main Campus</div>
+                </div>
+              </div>
+              <div class="cc-c-item">
+                <span class="cc-c-icon">🕒</span>
+                <div>
+                  <strong>Hours</strong>
+                  <div>Mon – Sun: 8:00 AM – 10:30 PM</div>
+                </div>
+              </div>
+              <div class="cc-c-item">
+                <span class="cc-c-icon">📞</span>
+                <div>
+                  <strong>Helpline / Kitchen Intercom</strong>
+                  <div>Ext: 4022 | +91 98765 43210</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cc-contact-callout">
+            <div class="cc-callout-icon">🍽️</div>
+            <h4>Order in Advance!</h4>
+            <p>Save time between lectures. Place your meal order online and pick it up hot and fresh at the counter.</p>
+            <button class="cc-btn-orange" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+              Browse Menu Now
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 

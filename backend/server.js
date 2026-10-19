@@ -57,12 +57,14 @@ const authRoutes = require('./routes/authRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/feedback', feedbackRoutes);
 app.use('/api/reports', adminRoutes); // reuse admin routes for reports
 
 // Error handling middleware

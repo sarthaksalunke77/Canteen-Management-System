@@ -542,10 +542,168 @@ function applyQRPreFill() {
   }
 }
 
+// ── Feedback Module ───────────────────────────────────────────
+function initFeedbackModule() {
+  const starsGroup  = document.getElementById('star-rating-group');
+  const ratingInput = document.getElementById('fb-rating');
+  const ratingText  = document.getElementById('rating-text');
+  const form        = document.getElementById('feedback-form');
+  const feedbackList = document.getElementById('feedback-list');
+
+  const ratingLabels = {
+    1: '1.0 — Needs Improvement ⚠️',
+    2: '2.0 — Fair',
+    3: '3.0 — Good 👍',
+    4: '4.0 — Very Good! ⭐',
+    5: '5.0 — Excellent! 🎉'
+  };
+
+  // Interactive star clicks
+  if (starsGroup) {
+    const stars = starsGroup.querySelectorAll('.cc-star-icon');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const val = parseInt(star.dataset.val);
+        if (ratingInput) ratingInput.value = val;
+        stars.forEach(s => {
+          const sVal = parseInt(s.dataset.val);
+          if (sVal <= val) s.classList.add('active');
+          else s.classList.remove('active');
+        });
+        if (ratingText) ratingText.textContent = ratingLabels[val] || `${val}.0`;
+      });
+    });
+  }
+
+  // Fetch & render reviews
+  async function loadFeedback() {
+    if (!feedbackList) return;
+    try {
+      const res = await fetch('/api/feedback');
+      if (!res.ok) throw new Error('Failed to load feedback');
+      const data = await res.json();
+      renderFeedbackList(data);
+    } catch (e) {
+      feedbackList.innerHTML = `
+        <div style="text-align:center;padding:1.5rem;color:#94a3b8;font-size:0.85rem;">
+          Be the first student to leave a review!
+        </div>`;
+    }
+  }
+
+  function renderFeedbackList(items) {
+    if (!feedbackList) return;
+    if (!items || items.length === 0) {
+      feedbackList.innerHTML = `
+        <div style="text-align:center;padding:1.5rem;color:#94a3b8;font-size:0.85rem;">
+          No reviews yet. Share your experience below!
+        </div>`;
+      return;
+    }
+    feedbackList.innerHTML = items.map(fb => `
+      <div class="cc-review-card">
+        <div class="cc-review-top">
+          <div>
+            <span class="cc-review-author">${escHtml(fb.name)}</span>
+            <span class="cc-review-role">(${escHtml(fb.role || 'Student')})</span>
+          </div>
+          <div class="cc-review-stars">${'★'.repeat(fb.rating || 5)}${'☆'.repeat(5 - (fb.rating || 5))}</div>
+        </div>
+        <div class="cc-review-tag">${escHtml(fb.category || 'General')}</div>
+        <p class="cc-review-msg">"${escHtml(fb.message)}"</p>
+      </div>
+    `).join('');
+  }
+
+  // Form submission
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('fb-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:8px;"></div> Submitting...';
+      }
+
+      const payload = {
+        name: document.getElementById('fb-name').value.trim(),
+        role: document.getElementById('fb-role').value,
+        rating: document.getElementById('fb-rating').value,
+        category: document.getElementById('fb-category').value,
+        message: document.getElementById('fb-message').value.trim(),
+      };
+
+      try {
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Feedback submission failed');
+        const data = await res.json();
+
+        showToast('🎉 Thank you for your feedback!', 'success');
+        form.reset();
+        // Reset stars to 5
+        if (starsGroup) {
+          starsGroup.querySelectorAll('.cc-star-icon').forEach(s => s.classList.add('active'));
+          if (ratingText) ratingText.textContent = ratingLabels[5];
+          if (ratingInput) ratingInput.value = '5';
+        }
+        // Prepend review
+        if (data.feedback) {
+          const cardHtml = `
+            <div class="cc-review-card" style="border-color:#10b981;">
+              <div class="cc-review-top">
+                <div>
+                  <span class="cc-review-author">${escHtml(data.feedback.name)}</span>
+                  <span class="cc-review-role">(${escHtml(data.feedback.role || 'Student')})</span>
+                </div>
+                <div class="cc-review-stars">${'★'.repeat(data.feedback.rating || 5)}</div>
+              </div>
+              <div class="cc-review-tag" style="background:#dcfce7;color:#166534;">${escHtml(data.feedback.category || 'General')}</div>
+              <p class="cc-review-msg">"${escHtml(data.feedback.message)}"</p>
+            </div>`;
+          feedbackList.insertAdjacentHTML('afterbegin', cardHtml);
+        }
+      } catch (err) {
+        showToast('Could not submit feedback. Try again.', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '🚀 Submit Feedback';
+        }
+      }
+    });
+  }
+
+  loadFeedback();
+}
+
+// ── Smooth Nav Link Active State ──────────────────────────────
+function initNavLinks() {
+  document.querySelectorAll('.cc-nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          document.querySelectorAll('.cc-nav-link').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        }
+      }
+    });
+  });
+}
+
 // ── Init ──────────────────────────────────────────────────────
 (async function init() {
   renderCart();
   handleQRParams();
+  initFeedbackModule();
+  initNavLinks();
   await fetchMenu();
 
   // Patch checkout button to apply QR pre-fill before opening
