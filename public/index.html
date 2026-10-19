@@ -4,35 +4,53 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>College Canteen | Order Fresh Food Online</title>
-  <meta name="description" content="Order fresh, delicious meals from our canteen. Browse our menu, add to cart, and get hot food delivered to your seat.">
+  <meta name="description" content="College Canteen - Delicious, hygienic and affordable meals for every student. Order online, pick up or dine in.">
   <link rel="stylesheet" href="/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
 </head>
-<body>
-  <!-- Background -->
-  <div class="bg-orbs"></div>
-
+<body class="light-canteen-theme">
   <!-- Toast Notifications -->
   <div id="toast-container"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <a href="/" class="navbar-brand">
-      <div class="logo-icon">🍽️</div>
-      <div>College <span>Canteen</span></div>
-    </a>
-    <div class="navbar-links">
-      <a href="/" class="active" id="nav-home">Menu</a>
-      <a href="/order-status" id="nav-track">Track Order</a>
-      <a href="/admin" id="nav-admin">Admin</a>
-    </div>
-    <button class="navbar-cart-btn" id="cart-toggle-btn" aria-label="Open Cart" title="View Cart">
-      🛒
-      <span class="cart-badge" id="cart-count-badge">0</span>
-    </button>
-  </nav>
+  <!-- ════ HEADER / NAVBAR ════ -->
+  <header class="cc-header">
+    <div class="cc-container cc-header-inner">
+      <!-- Brand Logo -->
+      <a href="/" class="cc-brand">
+        <div class="cc-brand-icon">🍴</div>
+        <div class="cc-brand-title">
+          <span class="cc-brand-dark">COLLEGE</span>
+          <span class="cc-brand-orange">CANTEEN</span>
+        </div>
+      </a>
 
-  <!-- Cart Overlay & Sidebar -->
+      <!-- Center Nav Links -->
+      <nav class="cc-nav">
+        <a href="/" class="cc-nav-link active">Home</a>
+        <a href="#menu-section" class="cc-nav-link">Menu</a>
+        <a href="#menu-section" class="cc-nav-link" id="nav-order-online">Order Online</a>
+        <a href="/order-status" class="cc-nav-link">Track Order</a>
+        <a href="#facilities" class="cc-nav-link">Facilities</a>
+        <a href="#feedback" class="cc-nav-link">Feedback</a>
+        <a href="#contact" class="cc-nav-link">Contact</a>
+      </nav>
+
+      <!-- Right Action Buttons -->
+      <div class="cc-actions">
+        <button class="cc-icon-btn" id="search-trigger-btn" aria-label="Search Menu" title="Search">
+          🔍
+        </button>
+        <button class="cc-cart-btn" id="cart-toggle-btn" aria-label="Open Cart" title="View Cart">
+          🛒 <span class="cc-cart-badge" id="cart-count-badge">0</span>
+        </button>
+        <a href="/admin" class="cc-login-btn">
+          👤 Login
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════ CART SIDEBAR & OVERLAY ════ -->
   <div class="cart-overlay" id="cart-overlay"></div>
   <aside class="cart-sidebar" id="cart-sidebar" role="complementary" aria-label="Shopping Cart">
     <div class="cart-header">
@@ -57,7 +75,7 @@
     </div>
   </aside>
 
-  <!-- Checkout Modal -->
+  <!-- ════ CHECKOUT MODAL ════ -->
   <div class="modal-overlay" id="checkout-modal">
     <div class="modal">
       <div class="modal-header">
@@ -79,10 +97,10 @@
           <div class="form-group">
             <label class="form-label">Order Type</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
-              <label id="lbl-dine-in" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:white;font-weight:700;font-size:0.9rem;border:2px solid var(--accent);transition:var(--transition);">
+              <label id="lbl-dine-in" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:var(--accent);color:white;font-weight:700;font-size:0.9rem;border:2px solid var(--accent);transition:var(--transition);">
                 <input type="radio" name="order_type" id="order-type-dine" value="Dine In" checked style="display:none;">🪑 Dine In
               </label>
-              <label id="lbl-takeaway" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:var(--glass);color:var(--text-secondary);font-weight:700;font-size:0.9rem;border:2px solid var(--glass-border);transition:var(--transition);">
+              <label id="lbl-takeaway" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.75rem;border-radius:var(--radius-sm);cursor:pointer;background:#f1f5f9;color:#475569;font-weight:700;font-size:0.9rem;border:2px solid #cbd5e1;transition:var(--transition);">
                 <input type="radio" name="order_type" id="order-type-takeaway" value="Take Away" style="display:none;">🥡 Take Away
               </label>
             </div>
@@ -101,42 +119,27 @@
               <option value="T6">Table 6</option>
               <option value="T7">Table 7</option>
               <option value="T8">Table 8</option>
-              <option value="T9">Table 9</option>
-              <option value="T10">Table 10</option>
-              <option value="T11">Table 11</option>
-              <option value="T12">Table 12</option>
-              <option value="T13">Table 13</option>
-              <option value="T14">Table 14</option>
-              <option value="T15">Table 15</option>
-              <option value="T16">Table 16</option>
-              <option value="T17">Table 17</option>
-              <option value="T18">Table 18</option>
-              <option value="T19">Table 19</option>
-              <option value="T20">Table 20</option>
             </select>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="payment-method">Payment Method</label>
             <select class="form-control" id="payment-method">
-              <option value="Cash">💵 Cash on Counter</option>
-              <option value="UPI">📱 UPI / QR Code</option>
+              <option value="Cash">💵 Cash at Counter</option>
+              <option value="UPI">📱 UPI / QR Scan</option>
               <option value="Card">💳 Debit / Credit Card</option>
+              <option value="Wallet">👛 Student Wallet</option>
             </select>
           </div>
-          <div id="order-summary-preview" style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1rem;">
-            <div class="d-flex justify-between mb-1" style="font-weight:700;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);">
-              <span>Order Summary</span>
-              <span>Amount</span>
-            </div>
-            <div id="order-preview-items"></div>
-            <div class="divider"></div>
-            <div class="d-flex justify-between" style="font-size:1.1rem;font-weight:800;">
-              <span>Total</span>
-              <span style="color:var(--accent);">₹<span id="order-preview-total">0</span></span>
+
+          <div id="checkout-summary" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:0.9rem;font-size:0.9rem;">
+            <div style="display:flex;justify-content:space-between;font-weight:700;">
+              <span>Amount Payable:</span>
+              <span id="checkout-amount" style="color:var(--accent);">₹0</span>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary btn-full btn-lg" id="place-order-btn">
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg" id="confirm-order-btn">
             ✅ Confirm & Place Order
           </button>
         </div>
@@ -144,114 +147,217 @@
     </div>
   </div>
 
-  <!-- Order Confirmation Modal -->
+  <!-- ════ CONFIRMATION MODAL ════ -->
   <div class="modal-overlay" id="confirm-modal">
-    <div class="modal" style="text-align:center;">
-      <div style="font-size:4rem;margin-bottom:1rem;animation:float 2s ease-in-out infinite;">🎉</div>
-      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;">Order Placed Successfully!</h2>
-      <p class="text-secondary mb-2">Your order has been received by the canteen.</p>
+    <div class="modal" style="text-align:center; max-width:440px;">
+      <div style="font-size:3.5rem; margin-bottom:1rem; animation:popIn 0.4s ease;">🎉</div>
+      <h2 class="modal-title mb-1" style="font-size:1.5rem;">Order Placed!</h2>
+      <p class="text-secondary mb-3" style="font-size:0.95rem;">
+        Your order <strong id="confirm-order-id" style="color:var(--accent)">#0000</strong> has been received by the kitchen.
+      </p>
 
-      <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:1.25rem;margin:1.25rem 0;">
-        <div style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;margin-bottom:0.25rem;">Your Order ID</div>
-        <div style="font-size:2.5rem;font-weight:900;color:var(--accent);" id="confirm-order-id">#00</div>
-        <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.25rem;">Use this to track your order</div>
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:1.2rem; margin-bottom:1.5rem; text-align:left;">
+        <div class="d-flex justify-between mb-2" style="font-size:0.88rem;">
+          <span class="text-muted">Estimated Prep Time</span>
+          <strong style="color:#10b981;">⚡ 5–10 mins</strong>
+        </div>
+        <div class="d-flex justify-between" style="font-size:0.88rem;">
+          <span class="text-muted">Status</span>
+          <span class="badge badge-received">Received</span>
+        </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <button class="btn btn-full" id="download-receipt-btn" style="background:linear-gradient(135deg,#10b981,#059669);color:white;font-weight:700;padding:0.85rem;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;font-size:0.95rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;">
-          🧾 Download Payment Receipt
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        <button class="btn btn-primary btn-full" id="download-receipt-btn" style="gap:0.5rem;">
+          📄 Download Bill / Receipt
         </button>
-        <a href="/order-status" class="btn btn-primary btn-full" id="track-order-link">📍 Track My Order</a>
-        <button class="btn btn-secondary btn-full" id="confirm-modal-close">Continue Ordering</button>
+        <a href="/order-status" class="btn btn-secondary btn-full" id="track-order-link">
+          📍 Track Order Status
+        </a>
+        <button class="btn btn-ghost btn-full" id="confirm-modal-close" style="font-size:0.85rem; color:#64748b;">
+          Close
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main class="page-wrapper">
-    <!-- Hero Section (Kadappa Cafe Poster Style) -->
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div>
-            <div class="text-eyebrow"><span>✨</span> AUTHENTIC FLAVOURS • CAMPUS CANTEEN</div>
-            <h1>
-              Traditional<br>Taste, <span class="gradient-text">Always Fresh</span>
-            </h1>
-            <p>Crispy dosas, hot masala chai, authentic meals, and quick snacks — prepared fresh every single day for students, faculty, and staff.</p>
-            <div class="hero-actions">
-              <button class="btn btn-primary btn-lg" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
-                EXPLORE MENU →
-              </button>
-              <a href="/order-status" class="btn btn-secondary btn-lg">📍 TRACK ORDER</a>
-            </div>
-          </div>
-
-          <div class="hero-showcase">
-            <span class="hero-showcase-badge">⭐ CAMPUS FAVORITE</span>
-            <span class="hero-showcase-emoji">🍛</span>
-            <h3 class="hero-showcase-title">College Canteen Delights</h3>
-            <p class="hero-showcase-desc">Order online in seconds. Skip the cafeteria queues and pick up hot, delicious meals directly from the counter.</p>
+  <!-- ════ MAIN WRAPPER ════ -->
+  <main class="cc-main">
+    <!-- ════ 1. SPLIT HERO BANNER ════ -->
+    <section class="cc-hero-section">
+      <div class="cc-container cc-hero-grid">
+        <!-- Left Banner Card -->
+        <div class="cc-hero-card-left">
+          <div class="cc-hero-pill">GOOD FOOD • GOOD FRIENDS • BETTER DAYS</div>
+          <h1 class="cc-hero-title">
+            <span class="cc-hero-title-white">COLLEGE</span>
+            <span class="cc-hero-title-orange">CANTEEN</span>
+          </h1>
+          <p class="cc-hero-desc">
+            Delicious, hygienic and affordable meals for every student.
+          </p>
+          <div class="cc-hero-btns">
+            <button class="cc-btn-orange" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+              🍽️ View Menu ➔
+            </button>
+            <button class="cc-btn-outline" onclick="document.getElementById('cart-toggle-btn').click()">
+              🛒 Order Online
+            </button>
           </div>
         </div>
 
-        <div class="hero-stats">
-          <div class="hero-stat"><div class="val">50+</div><div class="lbl">Menu Items</div></div>
-          <div class="hero-stat"><div class="val">5 Min</div><div class="lbl">Avg Wait Time</div></div>
-          <div class="hero-stat"><div class="val">₹15</div><div class="lbl">Starting Price</div></div>
-          <div class="hero-stat"><div class="val">100%</div><div class="lbl">Fresh Daily</div></div>
+        <!-- Right Banner Card (Photo) -->
+        <div class="cc-hero-card-right">
+          <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&auto=format&fit=crop" alt="College Canteen Hall" class="cc-hero-img">
+          <div class="cc-hero-banner-overlay">
+            <div class="cc-canteen-sign">COLLEGE CANTEEN</div>
+            <div class="cc-canteen-quote">EAT • STUDY • CHILL • REPEAT</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Kadappa Dotted Divider -->
-    <div class="container">
-      <div class="dotted-divider"></div>
-    </div>
-
-    <!-- Menu Section -->
-    <section id="menu-section" style="padding:2rem 0 4rem;">
-      <div class="container">
-        <div class="d-flex justify-between align-center mb-3" style="flex-wrap:wrap;gap:1rem;">
-          <div>
-            <h2 class="section-title">Our <span class="highlight">Menu</span></h2>
-            <p class="section-subtitle">Tap any item to add it to your order</p>
-          </div>
-          <div id="menu-search-wrapper">
-            <input class="form-control" id="menu-search" type="search" placeholder="🔍  Search menu..." style="width:220px;">
+    <!-- ════ 2. FEATURE BADGES (4 CARDS) ════ -->
+    <section class="cc-features-section">
+      <div class="cc-container cc-features-grid">
+        <div class="cc-feature-card">
+          <div class="cc-feature-icon icon-orange">🍽️</div>
+          <div class="cc-feature-info">
+            <div class="cc-feature-title">Fresh & Tasty Food</div>
+            <div class="cc-feature-sub">Hygienic & Quality Ingredients</div>
           </div>
         </div>
 
-        <!-- Category Filter -->
-        <div class="category-filter" id="category-filter">
-          <button class="category-btn active" data-category="All">All</button>
-          <button class="category-btn" data-category="Meals">🍛 Meals</button>
-          <button class="category-btn" data-category="Snacks">🥟 Snacks</button>
-          <button class="category-btn" data-category="Beverages">☕ Beverages</button>
-          <button class="category-btn" data-category="Desserts">🍦 Desserts</button>
-        </div>
-
-        <!-- Menu Grid -->
-        <div id="menu-grid" class="menu-grid">
-          <div style="grid-column:1/-1;display:flex;justify-content:center;padding:3rem 0;">
-            <div class="spinner"></div>
+        <div class="cc-feature-card">
+          <div class="cc-feature-icon icon-green">🍃</div>
+          <div class="cc-feature-info">
+            <div class="cc-feature-title">Affordable Prices</div>
+            <div class="cc-feature-sub">Student Friendly Rates</div>
           </div>
         </div>
 
-        <div id="menu-no-results" class="hidden text-center" style="padding:3rem 0;color:var(--text-muted);">
-          <p style="font-size:3rem;margin-bottom:1rem;">🔍</p>
-          <p class="font-semibold" style="font-size:1.1rem;">No items found</p>
-          <p style="margin-top:0.5rem;">Try a different search or category</p>
+        <div class="cc-feature-card">
+          <div class="cc-feature-icon icon-blue">👥</div>
+          <div class="cc-feature-info">
+            <div class="cc-feature-title">Spacious Seating</div>
+            <div class="cc-feature-sub">Comfortable & Clean Environment</div>
+          </div>
         </div>
+
+        <div class="cc-feature-card">
+          <div class="cc-feature-icon icon-purple">🛡️</div>
+          <div class="cc-feature-info">
+            <div class="cc-feature-title">Safe & Hygienic</div>
+            <div class="cc-feature-sub">Regular Quality Checks</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ 3. MENU SECTION + RIGHT SIDEBAR ════ -->
+    <section id="menu-section" class="cc-menu-section">
+      <div class="cc-container cc-menu-layout">
+        <!-- LEFT: Menu Content (75% Width) -->
+        <div class="cc-menu-main">
+          <!-- Menu Bar -->
+          <div class="cc-menu-header-bar">
+            <h2 class="cc-menu-heading">Our Menu</h2>
+            <!-- Filter Pills -->
+            <div class="category-filter cc-filter-pills" id="category-filter">
+              <button class="category-btn active" data-category="All">All Items</button>
+              <button class="category-btn" data-category="Snacks">Snacks</button>
+              <button class="category-btn" data-category="South Indian">South Indian</button>
+              <button class="category-btn" data-category="Chinese">Chinese</button>
+              <button class="category-btn" data-category="Beverages">Beverages</button>
+              <button class="category-btn" data-category="Tea & Coffee">Tea & Coffee</button>
+            </div>
+            <a href="#menu-grid" class="cc-view-all-link">View Full Menu ➔</a>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="cc-search-wrapper" id="menu-search-wrapper">
+            <input class="form-control cc-search-input" id="menu-search" type="search" placeholder="🔍 Search menu items...">
+          </div>
+
+          <!-- Dynamic Food Cards Grid -->
+          <div id="menu-grid" class="cc-food-grid">
+            <div style="grid-column:1/-1;display:flex;justify-content:center;padding:3rem 0;">
+              <div class="spinner"></div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="menu-no-results" class="hidden text-center cc-no-results">
+            <p style="font-size:3rem;margin-bottom:0.5rem;">🔍</p>
+            <p class="font-semibold" style="font-size:1.15rem;color:#1e293b;">No items found</p>
+            <p style="color:#64748b;margin-top:0.25rem;">Try another keyword or category</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: Sidebar Info Cards (25% Width) -->
+        <aside class="cc-sidebar">
+          <!-- Timings Card -->
+          <div class="cc-sidebar-card cc-timings-card">
+            <div class="cc-sidebar-card-title">
+              <span class="cc-card-icon">🕒</span>
+              <h3>Canteen Timings</h3>
+            </div>
+            <div class="cc-timings-inner">
+              <div class="cc-timings-days">
+                <span class="cc-cal-icon">📅</span>
+                <span>Monday to Sunday</span>
+              </div>
+              <div class="cc-timings-clock">
+                8:00 AM – 10:30 PM
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Special Card -->
+          <div class="cc-sidebar-card cc-special-card">
+            <div class="cc-sidebar-card-title">
+              <span class="cc-card-icon cc-star-orange">⭐</span>
+              <h3>Today's Special</h3>
+            </div>
+            <div class="cc-special-list">
+              <div class="cc-special-item" onclick="window.quickAddSpecial('Veg Biryani')" title="Click to add to cart">
+                <img src="https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=160&auto=format&fit=crop" alt="Veg Biryani" class="cc-special-img">
+                <div class="cc-special-details">
+                  <div class="cc-special-name">Veg Biryani</div>
+                  <div class="cc-special-price">₹70</div>
+                </div>
+                <button class="cc-special-plus-btn" aria-label="Add Veg Biryani">+</button>
+              </div>
+
+              <div class="cc-special-item" onclick="window.quickAddSpecial('Paneer Roll')" title="Click to add to cart">
+                <img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=160&auto=format&fit=crop" alt="Paneer Roll" class="cc-special-img">
+                <div class="cc-special-details">
+                  <div class="cc-special-name">Paneer Roll</div>
+                  <div class="cc-special-price">₹60</div>
+                </div>
+                <button class="cc-special-plus-btn" aria-label="Add Paneer Roll">+</button>
+              </div>
+
+              <div class="cc-special-item" onclick="window.quickAddSpecial('Cold Coffee')" title="Click to add to cart">
+                <img src="https://images.unsplash.com/photo-1461023058943-07cb1ce8db1b?w=160&auto=format&fit=crop" alt="Cold Coffee" class="cc-special-img">
+                <div class="cc-special-details">
+                  <div class="cc-special-name">Cold Coffee</div>
+                  <div class="cc-special-price">₹40</div>
+                </div>
+                <button class="cc-special-plus-btn" aria-label="Add Cold Coffee">+</button>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer style="border-top:1px solid var(--glass-border);padding:2rem 0;text-align:center;color:var(--text-muted);font-size:0.85rem;">
-    <div class="container">
-      <p>🍽️ <strong style="color:var(--text-secondary)">College Canteen</strong> — Canteen Management System</p>
-      <p class="mt-1">© 2024 Canteen Management System. Built for students, by students.</p>
+  <!-- ════ FOOTER ════ -->
+  <footer class="cc-footer">
+    <div class="cc-container cc-footer-inner">
+      <p>🍽️ <strong>College Canteen</strong> — Modern Campus Canteen Management System</p>
+      <p class="cc-copyright">© 2026 College Canteen. Fresh & hygienic food, prepared fresh every day.</p>
     </div>
   </footer>
 

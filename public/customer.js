@@ -72,21 +72,19 @@ function renderMenu() {
   noResults.classList.add('hidden');
 
   menuGrid.innerHTML = filtered.map(item => `
-    <article class="menu-card${item.available ? '' : ' unavailable'}" data-id="${item.id}" role="button" tabindex="0" aria-label="Add ${item.name} to cart">
-      <span class="menu-emoji">${item.image_emoji || '🍽️'}</span>
-      <div class="menu-name">${escHtml(item.name)}</div>
-      <div class="menu-desc">${escHtml(item.description || '')}</div>
-      <div class="menu-footer">
-        <span class="menu-price">${item.price}</span>
-        <button class="add-to-cart-btn" data-id="${item.id}" aria-label="Add ${item.name} to cart">+</button>
+    <article class="food-card${item.available ? '' : ' unavailable'}" data-id="${item.id}" role="button" tabindex="0" aria-label="Add ${escHtml(item.name)} to cart">
+      <div class="food-card-img-wrap">
+        <img class="food-card-img" src="${item.image_url || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500'}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500';">
+      </div>
+      <div class="food-card-body">
+        <div class="food-card-name">${escHtml(item.name)}</div>
+        <div class="food-card-price">₹${item.price}</div>
+        <button class="add-to-cart-btn btn-food-add" data-id="${item.id}" aria-label="Add ${escHtml(item.name)} to cart">
+          🛒 Add to Cart
+        </button>
       </div>
     </article>
   `).join('');
-
-  // Category badge
-  const catBadge = document.createElement('span');
-  catBadge.style.cssText = 'font-size:0.75rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:50px;padding:0.2rem 0.7rem;color:var(--text-muted);margin-left:auto;';
-  catBadge.textContent = `${filtered.length} item${filtered.length !== 1 ? 's' : ''}`;
 
   menuGrid.addEventListener('click', handleMenuClick);
   menuGrid.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleMenuClick(e); });
@@ -98,11 +96,18 @@ function escHtml(str) {
 
 function handleMenuClick(e) {
   const btn    = e.target.closest('.add-to-cart-btn');
-  const card   = e.target.closest('.menu-card');
+  const card   = e.target.closest('.food-card') || e.target.closest('.menu-card');
   const itemId = btn?.dataset.id || card?.dataset.id;
   if (!itemId) return;
   addToCart(parseInt(itemId));
 }
+
+window.quickAddSpecial = function(itemName) {
+  const item = state.menu.find(m => m.name.toLowerCase().includes(itemName.toLowerCase()));
+  if (item) {
+    addToCart(item.id);
+  }
+};
 
 // ── Cart Logic ────────────────────────────────────────────────
 function addToCart(itemId) {
