@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/order-status",
+      "destination": "/order_status.html"
+    },
+    {
+      "source": "/order-status/",
+      "destination": "/order_status.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    }
+  ]
+}

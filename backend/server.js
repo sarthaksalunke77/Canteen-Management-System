@@ -67,6 +67,13 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/reports', adminRoutes); // reuse admin routes for reports
 
+// Fallback mounts for Vercel serverless function routing
+app.use('/auth', authRoutes);
+app.use('/menu', menuRoutes);
+app.use('/orders', orderRoutes);
+app.use('/feedback', feedbackRoutes);
+app.use('/reports', adminRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -81,7 +88,11 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`\n🍽️  Canteen Management System running at http://localhost:${PORT}`);
-    console.log(`📋  Admin panel: http://localhost:${PORT}/admin\n`);
-});
+if (require.main === module && !process.env.VERCEL) {
+    server.listen(PORT, () => {
+        console.log(`\n🍽️  Canteen Management System running at http://localhost:${PORT}`);
+        console.log(`📋  Admin panel: http://localhost:${PORT}/admin\n`);
+    });
+}
+
+module.exports = app;
