@@ -2,8 +2,8 @@ const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const generateToken = (id, role) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+const generateToken = (id, role, username = 'Admin') => {
+    return jwt.sign({ id, role, username }, process.env.JWT_SECRET || 'cms-secret-key-2026', { expiresIn: '7d' });
 };
 
 exports.register = async (req, res) => {
@@ -97,6 +97,22 @@ exports.status = (req, res) => {
     if (req.session && req.session.isAdmin) {
         return res.json({ isAdmin: true, username: req.session.adminUser || 'admin' });
     }
+
+    // Check JWT header if passed
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        const token = req.headers.authorization.split(' ')[1];
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'cms-secret-key-2026');
+            if (decoded && decoded.role === 'admin') {
+                if (req.session) {
+                    req.session.isAdmin = true;
+                    req.session.adminUser = decoded.username || 'admin';
+                }
+                return res.json({ isAdmin: true, username: decoded.username || 'admin' });
+            }
+        } catch (e) {}
+    }
+
     return res.json({ isAdmin: false, username: null });
 };
 

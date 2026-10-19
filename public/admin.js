@@ -32,6 +32,20 @@ let allMenu   = [];
 let charts    = {};
 let deleteCallback = null;
 
+// ── Admin Fetch Helper ─────────────────────────────────────────
+async function adminFetch(url, options = {}) {
+  const token = localStorage.getItem('admin_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'admin-client',
+    ...(options.headers || {})
+  };
+  if (token && !headers['Authorization']) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return fetch(url, { ...options, headers, credentials: 'include' });
+}
+
 // ── Login ─────────────────────────────────────────────────────
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -41,7 +55,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   try {
     const resp = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'admin-client' },
+      credentials: 'include',
       body: JSON.stringify({
         username: document.getElementById('login-username').value,
         password: document.getElementById('login-password').value,
@@ -49,10 +64,14 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     });
     if (!resp.ok) { showToast('Invalid credentials', 'error'); return; }
     const data = await resp.json();
+    if (data.token) {
+      localStorage.setItem('admin_token', data.token);
+      localStorage.setItem('admin_username', data.username || 'admin');
+    }
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-app').classList.remove('hidden');
-    document.getElementById('admin-username-display').textContent = `Logged in as ${data.username}`;
-    showToast(`Welcome back, ${data.username}!`, 'success');
+    document.getElementById('admin-username-display').textContent = `Logged in as ${data.username || 'admin'}`;
+    showToast(`Welcome back, ${data.username || 'admin'}!`, 'success');
     initAdmin();
   } catch {
     showToast('Login failed. Is server running?', 'error');
@@ -64,20 +83,27 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
 // Check existing session on load
 (async function checkSession() {
+  const token = localStorage.getItem('admin_token');
   try {
-    const resp = await fetch('/api/auth/status');
+    const headers = { 'X-Requested-With': 'admin-client' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const resp = await fetch('/api/auth/status', { headers, credentials: 'include' });
     const data = await resp.json();
     if (data.isAdmin) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-app').classList.remove('hidden');
-      document.getElementById('admin-username-display').textContent = `Logged in as ${data.username}`;
+      document.getElementById('admin-username-display').textContent = `Logged in as ${data.username || localStorage.getItem('admin_username') || 'admin'}`;
       initAdmin();
+    } else {
+      localStorage.removeItem('admin_token');
     }
   } catch { /* no-op, show login */ }
 })();
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
-  await fetch('/api/auth/logout', { method: 'POST' });
+  localStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_username');
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
   location.reload();
 });
 
@@ -116,8 +142,8 @@ function initAdmin() {
 async function loadDashboard() {
   try {
     const [summaryResp, menuResp] = await Promise.all([
-      fetch('/api/reports/summary'),
-      fetch('/api/menu'),
+      adminFetch('/api/reports/summary'),
+      adminFetch('/api/menu'),
     ]);
     const summary = await summaryResp.json();
     const menu    = await menuResp.json();
@@ -158,7 +184,7 @@ async function loadDashboard() {
 // ── Orders ────────────────────────────────────────────────────
 async function loadOrders() {
   try {
-    const resp = await fetch('/api/orders');
+    const resp = await adminFetch('/api/orders');
     allOrders  = await resp.json();
     renderOrdersTable();
     // Update pending badge
@@ -221,9 +247,8 @@ function renderOrdersTable() {
 
 async function updateOrderStatus(orderId, newStatus) {
   try {
-    const resp = await fetch(`/api/orders/${orderId}/status`, {
+    const resp = await adminFetch(`/api/orders/${orderId}/status`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
     });
     if (!resp.ok) throw new Error();
@@ -244,7 +269,7 @@ document.getElementById('refresh-orders-btn').addEventListener('click', () => { 
 // ── Download Receipt (Admin) ───────────────────────────────────
 async function downloadAdminReceipt(orderId) {
   try {
-    const resp = await fetch(`/api/orders/${orderId}`);
+    const resp = await adminFetch(`/api/orders/${orderId}`);
     if (!resp.ok) throw new Error('Order not found');
     const order = await resp.json();
     generateReceipt(order);
@@ -256,7 +281,7 @@ async function downloadAdminReceipt(orderId) {
 // ── Menu CRUD ─────────────────────────────────────────────────
 async function loadMenu() {
   try {
-    const resp = await fetch('/api/menu');
+    const resp = await adminFetch('/api/menu');
     allMenu    = await resp.json();
     renderMenuTable();
   } catch {
@@ -309,7 +334,7 @@ const foodEmojiKeywords = [
   { keywords: ['green tea', 'herbal tea', 'matcha'], emoji: '🍵', category: 'Beverages' },
   { keywords: ['lemon tea', 'ice tea', 'iced tea'], emoji: '🍋', category: 'Beverages' },
   { keywords: ['cold coffee', 'frappe', 'iced coffee'], emoji: '🧋', category: 'Beverages' },
-  { keywords: ['lassi', 'mango lassi', 'chaas', 'buttermilk'], emoji: '🥛', category: 'Beverages' },
+  { keywords: ['milk', 'fresh milk', 'hot milk', 'cold milk', 'lassi', 'mango lassi', 'chaas', 'buttermilk'], emoji: '🥛', category: 'Beverages' },
   { keywords: ['chai', 'masala chai', 'cutting chai', 'tea', 'chay', 'cutting'], emoji: '☕', category: 'Tea & Coffee' },
   { keywords: ['coffee', 'coffe', 'cappuccino', 'espresso', 'latte', 'mocha'], emoji: '☕', category: 'Tea & Coffee' },
   { keywords: ['juice', 'shake', 'smoothie', 'soda', 'drink', 'lemonade', 'lime', 'cola', 'pepsi', 'sprite', 'sharbat', 'badam milk'], emoji: '🍹', category: 'Beverages' },
@@ -401,6 +426,11 @@ function openEditForm(itemId) {
 
 document.getElementById('menu-item-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const saveBtn = document.querySelector('#menu-item-form button[type="submit"]');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+  }
   const editId = document.getElementById('edit-item-id').value;
   const payload = {
     name:        document.getElementById('item-name').value.trim(),
@@ -414,20 +444,31 @@ document.getElementById('menu-item-form').addEventListener('submit', async (e) =
   try {
     let resp;
     if (editId) {
-      resp = await fetch(`/api/menu/${editId}`, {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+      resp = await adminFetch(`/api/menu/${editId}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
       });
     } else {
-      resp = await fetch('/api/menu', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+      resp = await adminFetch('/api/menu', {
+        method: 'POST',
+        body: JSON.stringify(payload),
       });
     }
-    if (!resp.ok) throw new Error();
-    showToast(editId ? 'Item updated' : 'Item added', 'success');
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData.error || 'Failed to save item');
+    }
+    showToast(editId ? 'Item updated successfully!' : 'Item added successfully!', 'success');
     document.getElementById('menu-form-card').style.display = 'none';
-    loadMenu();
-  } catch {
-    showToast('Failed to save item', 'error');
+    document.getElementById('menu-item-form').reset();
+    await loadMenu();
+  } catch (err) {
+    showToast(err.message || 'Failed to save item', 'error');
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Save Item';
+    }
   }
 });
 
@@ -435,11 +476,11 @@ async function toggleAvailable(itemId, current) {
   const item = allMenu.find(m => m.id === itemId);
   if (!item) return;
   try {
-    await fetch(`/api/menu/${itemId}`, {
+    const resp = await adminFetch(`/api/menu/${itemId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...item, available: current ? 0 : 1 }),
     });
+    if (!resp.ok) throw new Error();
     showToast(`Item ${current ? 'hidden' : 'made available'}`, 'success');
     loadMenu();
   } catch {
@@ -464,8 +505,9 @@ document.getElementById('delete-confirm-btn').addEventListener('click', async ()
   document.getElementById('delete-modal').classList.remove('active');
   deleteCallback = null;
   try {
-    await fetch(`/api/menu/${itemId}`, { method: 'DELETE' });
-    showToast('Item deleted', 'success');
+    const resp = await adminFetch(`/api/menu/${itemId}`, { method: 'DELETE' });
+    if (!resp.ok) throw new Error();
+    showToast('Item deleted successfully', 'success');
     loadMenu();
   } catch {
     showToast('Failed to delete item', 'error');
@@ -475,7 +517,7 @@ document.getElementById('delete-confirm-btn').addEventListener('click', async ()
 // ── Reports ───────────────────────────────────────────────────
 async function loadReports() {
   try {
-    const resp = await fetch('/api/reports/summary');
+    const resp = await adminFetch('/api/reports/summary');
     const data = await resp.json();
 
     document.getElementById('rep-total-orders').textContent  = data.totalOrders;

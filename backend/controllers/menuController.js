@@ -35,12 +35,15 @@ const FOOD_IMAGE_MAP = {
   'espresso': 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop',
   'coffee': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
 
-  // 3. Lassi & Yogurt drinks (Distinct from coffee & generic beverage!)
+  // 3. Lassi & Milk drinks (Distinct from coffee & generic beverage!)
   'mango lassi': 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?w=500&auto=format&fit=crop',
   'sweet lassi': 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=500&auto=format&fit=crop',
   'lassi': 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?w=500&auto=format&fit=crop',
   'chaas': 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=500&auto=format&fit=crop',
   'buttermilk': 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=500&auto=format&fit=crop',
+  'fresh milk': 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop',
+  'hot milk': 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop',
+  'milk': 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop',
 
   // 4. Shakes & Cold drinks
   'shake': 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop',
@@ -98,6 +101,9 @@ const FOOD_EMOJI_RULES = [
   { match: 'lassi', emoji: '🥛' },
   { match: 'chaas', emoji: '🥛' },
   { match: 'buttermilk', emoji: '🥛' },
+  { match: 'fresh milk', emoji: '🥛' },
+  { match: 'hot milk', emoji: '🥛' },
+  { match: 'milk', emoji: '🥛' },
   { match: 'shake', emoji: '🥤' },
   { match: 'juice', emoji: '🍹' },
   { match: 'lime', emoji: '🍋' },
@@ -199,13 +205,20 @@ exports.getMenuItem = async (req, res) => {
 
 exports.createMenuItem = async (req, res) => {
     const { name, description, price, category, image_emoji, image_url } = req.body;
-    const emoji = getItemEmoji(name, category, image_emoji || image_url);
-    const imgUrl = getItemImageUrl(name, category, image_url);
+    if (!name || !name.trim()) {
+        return res.status(400).json({ error: 'Item name is required' });
+    }
+    const cleanName = name.trim();
+    const parsedPrice = parseFloat(price);
+    const validPrice = isNaN(parsedPrice) ? 0 : parsedPrice;
+    const cat = category || 'Meals';
+    const emoji = getItemEmoji(cleanName, cat, image_emoji || image_url);
+    const imgUrl = getItemImageUrl(cleanName, cat, image_url);
     
     try {
         const result = await db.query(
             'INSERT INTO menu_items (name, description, price, category, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [name, description, parseFloat(price), category, emoji]
+            [cleanName, description || '', validPrice, cat, emoji]
         );
         const item = result.rows[0];
         return res.status(201).json({
@@ -221,10 +234,10 @@ exports.createMenuItem = async (req, res) => {
     } catch (err) {
         const newItem = {
             id: fallbackMenu.length ? Math.max(...fallbackMenu.map(m => m.id)) + 1 : 1,
-            name,
+            name: cleanName,
             description: description || '',
-            price: parseFloat(price),
-            category: category || 'Meals',
+            price: validPrice,
+            category: cat,
             image_url: imgUrl,
             image_emoji: emoji,
             available: 1
