@@ -187,7 +187,7 @@
               <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1rem;">
                 <div class="form-group">
                   <label class="form-label" for="item-name">Name *</label>
-                  <input class="form-control" type="text" id="item-name" placeholder="e.g. Masala Chai" required>
+                  <input class="form-control" type="text" id="item-name" placeholder="e.g. Masala Chai" oninput="window.autoDetectEmoji && window.autoDetectEmoji(this.value)" onkeyup="window.autoDetectEmoji && window.autoDetectEmoji(this.value)" required>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="item-price">Price (₹) *</label>
@@ -203,8 +203,22 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label" for="item-emoji">Emoji</label>
-                  <input class="form-control" type="text" id="item-emoji" placeholder="e.g. ☕" maxlength="4" value="🍽️">
+                  <label class="form-label" for="item-emoji">Emoji (Auto-detected or Click)</label>
+                  <input class="form-control" type="text" id="item-emoji" placeholder="e.g. ☕" maxlength="8" value="🍽️">
+                  <div style="display:flex;gap:0.35rem;margin-top:0.35rem;flex-wrap:wrap;font-size:1.15rem;">
+                    <span role="button" onclick="window.setEmoji('🍵','Beverages')" title="Chai / Tea" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍵</span>
+                    <span role="button" onclick="window.setEmoji('☕','Beverages')" title="Coffee" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">☕</span>
+                    <span role="button" onclick="window.setEmoji('🍹','Beverages')" title="Cold Drink / Juice" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍹</span>
+                    <span role="button" onclick="window.setEmoji('🍔','Snacks')" title="Burger / Vada Pav" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍔</span>
+                    <span role="button" onclick="window.setEmoji('🍕','Snacks')" title="Pizza" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍕</span>
+                    <span role="button" onclick="window.setEmoji('🥪','Snacks')" title="Sandwich" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🥪</span>
+                    <span role="button" onclick="window.setEmoji('🥟','Snacks')" title="Samosa" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🥟</span>
+                    <span role="button" onclick="window.setEmoji('🥞','Snacks')" title="Dosa" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🥞</span>
+                    <span role="button" onclick="window.setEmoji('🍱','Meals')" title="Thali" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍱</span>
+                    <span role="button" onclick="window.setEmoji('🍗','Meals')" title="Biryani" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍗</span>
+                    <span role="button" onclick="window.setEmoji('🍨','Desserts')" title="Ice Cream" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍨</span>
+                    <span role="button" onclick="window.setEmoji('🍰','Desserts')" title="Cake" style="cursor:pointer;padding:2px 6px;background:rgba(255,255,255,0.08);border-radius:6px;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍰</span>
+                  </div>
                 </div>
                 <div class="form-group" style="grid-column:1/-1;">
                   <label class="form-label" for="item-description">Description</label>
@@ -345,7 +359,7 @@
     </div>
   </div>
 
-  <script src="/receipt.js"></script>
-  <script src="/admin.js"></script>
+  <script src="/receipt.js?v=2"></script>
+  <script src="/admin.js?v=2"></script>
 </body>
 </html>

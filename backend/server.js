@@ -38,8 +38,14 @@ app.use(session({
     cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve static frontend files (no-cache for instant updates)
+app.use(express.static(path.join(__dirname, '../public'), {
+    etag: false,
+    maxAge: 0,
+    setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    }
+}));
 
 // HTML Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../public', 'index.html')));

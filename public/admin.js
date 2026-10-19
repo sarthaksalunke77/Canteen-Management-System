@@ -340,20 +340,42 @@ const foodEmojiKeywords = [
   { keywords: ['donut', 'doughnut'], emoji: '🍩', category: 'Desserts' },
 ];
 
-document.getElementById('item-name').addEventListener('input', (e) => {
-  const val = e.target.value.toLowerCase().trim();
+function autoDetectEmoji(val) {
+  val = String(val || '').toLowerCase().trim();
   if (!val) return;
   for (const item of foodEmojiKeywords) {
     if (item.keywords.some(k => val.includes(k))) {
-      document.getElementById('item-emoji').value = item.emoji;
-      const editId = document.getElementById('edit-item-id').value;
-      if (!editId && item.category) {
-        document.getElementById('item-category').value = item.category;
+      const emojiInput = document.getElementById('item-emoji');
+      if (emojiInput) emojiInput.value = item.emoji;
+      const editId = document.getElementById('edit-item-id') ? document.getElementById('edit-item-id').value : '';
+      const catInput = document.getElementById('item-category');
+      if (!editId && item.category && catInput) {
+        catInput.value = item.category;
       }
       break;
     }
   }
-});
+}
+
+function setEmoji(emoji, category) {
+  const emojiInput = document.getElementById('item-emoji');
+  if (emojiInput) emojiInput.value = emoji;
+  const editId = document.getElementById('edit-item-id') ? document.getElementById('edit-item-id').value : '';
+  const catInput = document.getElementById('item-category');
+  if (!editId && category && catInput) {
+    catInput.value = category;
+  }
+}
+
+window.autoDetectEmoji = autoDetectEmoji;
+window.setEmoji = setEmoji;
+
+const nameInput = document.getElementById('item-name');
+if (nameInput) {
+  nameInput.addEventListener('input', (e) => autoDetectEmoji(e.target.value));
+  nameInput.addEventListener('keyup', (e) => autoDetectEmoji(e.target.value));
+  nameInput.addEventListener('change', (e) => autoDetectEmoji(e.target.value));
+}
 
 document.getElementById('cancel-form-btn').addEventListener('click', () => {
   document.getElementById('menu-form-card').style.display = 'none';
