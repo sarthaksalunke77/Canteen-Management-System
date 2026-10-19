@@ -6,13 +6,55 @@ let fallbackMenu = [
   { id: 2, name: 'Masala Dosa', description: 'Crispy crepe stuffed with savory mashed potato filling.', price: 50, category: 'South Indian', image_url: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop', image_emoji: '🥞', available: 1 },
   { id: 3, name: 'Veg Biryani', description: 'Fragrant basmati rice cooked with garden fresh vegetables & spices.', price: 70, category: 'Meals', image_url: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop', image_emoji: '🍚', available: 1 },
   { id: 4, name: 'Veg Noodles', description: 'Wok-tossed noodles with crunchy vegetables and oriental sauces.', price: 60, category: 'Chinese', image_url: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop', image_emoji: '🍜', available: 1 },
-  { id: 5, name: 'Cold Coffee', description: 'Creamy iced espresso blended with rich chocolate and vanilla.', price: 40, category: 'Beverages', image_url: 'https://images.unsplash.com/photo-1461023058943-07cb1ce8db1b?w=500&auto=format&fit=crop', image_emoji: '☕', available: 1 },
+  { id: 5, name: 'Cold Coffee', description: 'Creamy iced espresso blended with rich chocolate and vanilla.', price: 40, category: 'Beverages', image_url: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop', image_emoji: '☕', available: 1 },
   { id: 6, name: 'Veg Sandwich', description: 'Tri-layer toasted sandwich stuffed with fresh vegetables & cheese.', price: 50, category: 'Snacks', image_url: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop', image_emoji: '🥪', available: 1 },
   { id: 7, name: 'Paneer Roll', description: 'Warm flatbread rolled with marinated paneer and tangy chutney.', price: 60, category: 'Snacks', image_url: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop', image_emoji: '🌯', available: 1 },
-  { id: 8, name: 'Masala Chai', description: 'Cardamom and ginger infused traditional hot brewed Indian tea.', price: 15, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1571934811356-5cc50f160c9f?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
+  { id: 8, name: 'Masala Chai', description: 'Cardamom and ginger infused traditional hot brewed Indian tea.', price: 15, category: 'Tea & Coffee', image_url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop', image_emoji: '🍵', available: 1 },
   { id: 9, name: 'Veg Thali', description: 'Complete traditional meal with dal, seasonal sabzi, roti, rice & salad.', price: 80, category: 'Meals', image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop', image_emoji: '🍱', available: 1 },
-  { id: 10, name: 'Gulab Jamun (2 pcs)', description: 'Melt-in-mouth soft dumplings immersed in rose-cardamom sugar syrup.', price: 30, category: 'Desserts', image_url: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=500&auto=format&fit=crop', image_emoji: '🍨', available: 1 }
+  { id: 10, name: 'Gulab Jamun (2 pcs)', description: 'Melt-in-mouth soft dumplings immersed in rose-cardamom sugar syrup.', price: 30, category: 'Desserts', image_url: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop', image_emoji: '🍨', available: 1 }
 ];
+
+const FOOD_IMAGE_MAP = {
+  'samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
+  'dosa': 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop',
+  'biryani': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop',
+  'rice': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop',
+  'noodle': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'chowmein': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'chinese': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'coffee': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
+  'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
+  'roll': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
+  'paneer': 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop',
+  'chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'thali': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop',
+  'jamun': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'dessert': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop',
+  'pizza': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop',
+  'lime': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop',
+  'soda': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop',
+  'juice': 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&auto=format&fit=crop',
+  'beverage': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
+  'snack': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
+  'meal': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop'
+};
+
+function getItemImageUrl(name, category, existingUrl) {
+  if (existingUrl && typeof existingUrl === 'string' && existingUrl.startsWith('http')) {
+    return existingUrl;
+  }
+  const n = (name || '').toLowerCase();
+  const c = (category || '').toLowerCase();
+  for (const [key, url] of Object.entries(FOOD_IMAGE_MAP)) {
+    if (n.includes(key)) return url;
+  }
+  for (const [key, url] of Object.entries(FOOD_IMAGE_MAP)) {
+    if (c.includes(key)) return url;
+  }
+  return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop';
+}
 
 exports.getMenu = async (req, res) => {
     try {
@@ -24,16 +66,16 @@ exports.getMenu = async (req, res) => {
                 description: item.description,
                 price: parseFloat(item.price),
                 category: item.category,
-                image_url: item.image_url,
-                image_emoji: item.image_emoji || item.image_url || '🍽️',
+                image_url: getItemImageUrl(item.name, item.category, item.image_url),
+                image_emoji: item.image_emoji || (item.image_url && !item.image_url.startsWith('http') ? item.image_url : '🍽️'),
                 available: item.is_available !== false ? 1 : 0
             }));
             return res.json(mapped);
         }
-        res.json(fallbackMenu);
+        res.json(fallbackMenu.map(i => ({ ...i, image_url: getItemImageUrl(i.name, i.category, i.image_url) })));
     } catch (err) {
         // Fallback to internal catalog when DB is offline
-        res.json(fallbackMenu);
+        res.json(fallbackMenu.map(i => ({ ...i, image_url: getItemImageUrl(i.name, i.category, i.image_url) })));
     }
 };
 

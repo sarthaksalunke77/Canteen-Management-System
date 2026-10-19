@@ -52,14 +52,59 @@ async function fetchMenu() {
   }
 }
 
+// ── Food Image Resolver ───────────────────────────────────────
+const FOOD_IMAGE_MAP = {
+  'samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
+  'dosa': 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop',
+  'biryani': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop',
+  'rice': 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop',
+  'noodle': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'chowmein': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'chinese': 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop',
+  'coffee': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
+  'sandwich': 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=500&auto=format&fit=crop',
+  'roll': 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500&auto=format&fit=crop',
+  'paneer': 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop',
+  'chai': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'tea': 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop',
+  'thali': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop',
+  'jamun': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'dessert': 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=500&auto=format&fit=crop',
+  'burger': 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop',
+  'pizza': 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop',
+  'lime': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop',
+  'soda': 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop',
+  'juice': 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500&auto=format&fit=crop',
+  'beverage': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop',
+  'snack': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop',
+  'meal': 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop'
+};
+
+function getItemImage(item) {
+  if (item && item.image_url && item.image_url.startsWith('http')) {
+    return item.image_url;
+  }
+  const name = (item && item.name ? item.name : '').toLowerCase();
+  const cat  = (item && item.category ? item.category : '').toLowerCase();
+  for (const [key, url] of Object.entries(FOOD_IMAGE_MAP)) {
+    if (name.includes(key)) return url;
+  }
+  for (const [key, url] of Object.entries(FOOD_IMAGE_MAP)) {
+    if (cat.includes(key)) return url;
+  }
+  return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500&auto=format&fit=crop';
+}
+
 // ── Render Menu ───────────────────────────────────────────────
+let menuListenerAttached = false;
+
 function renderMenu() {
   const cat   = state.activeCategory;
   const query = state.searchQuery.toLowerCase();
 
   const filtered = state.menu.filter(item => {
     const matchCat   = cat === 'All' || item.category === cat;
-    const matchQuery = !query || item.name.toLowerCase().includes(query) || item.description.toLowerCase().includes(query);
+    const matchQuery = !query || item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query));
     return matchCat && matchQuery && item.available;
   });
 
@@ -71,10 +116,12 @@ function renderMenu() {
   }
   noResults.classList.add('hidden');
 
-  menuGrid.innerHTML = filtered.map(item => `
+  menuGrid.innerHTML = filtered.map(item => {
+    const imgUrl = getItemImage(item);
+    return `
     <article class="food-card${item.available ? '' : ' unavailable'}" data-id="${item.id}" role="button" tabindex="0" aria-label="Add ${escHtml(item.name)} to cart">
       <div class="food-card-img-wrap">
-        <img class="food-card-img" src="${item.image_url || 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500'}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500';">
+        <img class="food-card-img" src="${imgUrl}" alt="${escHtml(item.name)}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500';">
       </div>
       <div class="food-card-body">
         <div class="food-card-name">${escHtml(item.name)}</div>
@@ -84,14 +131,18 @@ function renderMenu() {
         </button>
       </div>
     </article>
-  `).join('');
+    `;
+  }).join('');
 
-  menuGrid.addEventListener('click', handleMenuClick);
-  menuGrid.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleMenuClick(e); });
+  if (!menuListenerAttached) {
+    menuGrid.addEventListener('click', handleMenuClick);
+    menuGrid.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleMenuClick(e); });
+    menuListenerAttached = true;
+  }
 }
 
 function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function handleMenuClick(e) {
@@ -103,31 +154,47 @@ function handleMenuClick(e) {
 }
 
 window.quickAddSpecial = function(itemName) {
-  const item = state.menu.find(m => m.name.toLowerCase().includes(itemName.toLowerCase()));
-  if (item) {
-    addToCart(item.id);
+  let item = state.menu.find(m => m.name.toLowerCase().includes(itemName.toLowerCase()));
+  if (!item) {
+    const defaults = {
+      'Veg Biryani': { id: 991, name: 'Veg Biryani', price: 70, category: 'Meals', image_emoji: '🍚', available: 1 },
+      'Paneer Roll': { id: 992, name: 'Paneer Roll', price: 60, category: 'Snacks', image_emoji: '🌯', available: 1 },
+      'Cold Coffee': { id: 993, name: 'Cold Coffee', price: 40, category: 'Beverages', image_emoji: '☕', available: 1 }
+    };
+    item = defaults[itemName] || { id: Date.now(), name: itemName, price: 50, category: 'Snacks', image_emoji: '⭐', available: 1 };
+    state.menu.push(item);
   }
+  addToCart(item);
+  openCart();
 };
 
 // ── Cart Logic ────────────────────────────────────────────────
-function addToCart(itemId) {
-  const item = state.menu.find(m => m.id === itemId);
-  if (!item || !item.available) return;
+function addToCart(itemOrId) {
+  let item = typeof itemOrId === 'object' ? itemOrId : state.menu.find(m => m.id === itemOrId);
+  if (!item) return;
 
-  const existing = state.cart.find(c => c.id === itemId);
+  const existing = state.cart.find(c => c.id === item.id);
   if (existing) {
     existing.qty += 1;
   } else {
-    state.cart.push({ id: item.id, name: item.name, price: item.price, emoji: item.image_emoji || '🍽️', qty: 1 });
+    state.cart.push({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      emoji: item.image_emoji || '🍽️',
+      qty: 1
+    });
   }
   saveCart();
   renderCart();
-  showToast(`${item.image_emoji} ${item.name} added to cart`, 'success');
+  showToast(`${item.image_emoji || '🍽️'} ${item.name} added to cart`, 'success');
 
   // Animate badge
-  cartBadge.classList.remove('visible');
-  void cartBadge.offsetWidth;
-  cartBadge.classList.add('visible');
+  if (cartBadge) {
+    cartBadge.classList.remove('visible');
+    void cartBadge.offsetWidth;
+    cartBadge.classList.add('visible');
+  }
 }
 
 function removeFromCart(itemId) {
@@ -222,24 +289,41 @@ document.getElementById('cart-close-btn').addEventListener('click', closeCart);
 cartOverlay.addEventListener('click', closeCart);
 
 // ── Checkout ──────────────────────────────────────────────────
-document.getElementById('checkout-btn').addEventListener('click', () => {
-  if (state.cart.length === 0) { showToast('Your cart is empty!', 'warning'); return; }
-  closeCart();
-  // Populate preview
-  document.getElementById('order-preview-items').innerHTML = state.cart.map(i =>
-    `<div class="d-flex justify-between" style="padding:0.3rem 0;font-size:0.85rem;">
-      <span>${i.emoji} ${escHtml(i.name)} × ${i.qty}</span>
-      <span style="color:var(--accent);">₹${i.price * i.qty}</span>
-    </div>`
-  ).join('');
-  document.getElementById('order-preview-total').textContent = getCartTotal();
-  checkoutModal.classList.add('active');
-});
+const checkoutBtn = document.getElementById('checkout-btn');
+if (checkoutBtn) {
+  checkoutBtn.addEventListener('click', () => {
+    if (state.cart.length === 0) { showToast('Your cart is empty!', 'warning'); return; }
+    closeCart();
+    // Populate preview
+    const previewItems = document.getElementById('order-preview-items');
+    if (previewItems) {
+      previewItems.innerHTML = state.cart.map(i =>
+        `<div class="d-flex justify-between" style="padding:0.3rem 0;font-size:0.85rem;">
+          <span>${i.emoji || '🍽️'} ${escHtml(i.name)} × ${i.qty}</span>
+          <span style="color:var(--accent);font-weight:600;">₹${i.price * i.qty}</span>
+        </div>`
+      ).join('');
+    }
+    const previewTotal = document.getElementById('order-preview-total');
+    if (previewTotal) previewTotal.textContent = getCartTotal();
+    const chkAmt = document.getElementById('checkout-amount');
+    if (chkAmt) chkAmt.textContent = `₹${getCartTotal()}`;
 
-document.getElementById('checkout-modal-close').addEventListener('click', () => {
-  checkoutModal.classList.remove('active');
-});
-checkoutModal.addEventListener('click', (e) => { if (e.target === checkoutModal) checkoutModal.classList.remove('active'); });
+    if (checkoutModal) checkoutModal.classList.add('active');
+  });
+}
+
+const checkoutModalClose = document.getElementById('checkout-modal-close');
+if (checkoutModalClose) {
+  checkoutModalClose.addEventListener('click', () => {
+    if (checkoutModal) checkoutModal.classList.remove('active');
+  });
+}
+if (checkoutModal) {
+  checkoutModal.addEventListener('click', (e) => {
+    if (e.target === checkoutModal) checkoutModal.classList.remove('active');
+  });
+}
 
 // ── Order Type Toggle ─────────────────────────────────────────
 function initOrderTypeToggle() {
@@ -249,6 +333,8 @@ function initOrderTypeToggle() {
   const lblTake      = document.getElementById('lbl-takeaway');
   const tableGroup   = document.getElementById('table-number-group');
   const tableSelect  = document.getElementById('table-number');
+
+  if (!dineRadio || !takeRadio || !lblDine || !lblTake || !tableGroup || !tableSelect) return;
 
   function updateToggle() {
     const isDineIn = dineRadio.checked;
@@ -276,21 +362,27 @@ function initOrderTypeToggle() {
 }
 initOrderTypeToggle();
 
-document.getElementById('checkout-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('place-order-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Placing Order...';
+const checkoutForm = document.getElementById('checkout-form');
+if (checkoutForm) {
+  checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('place-order-btn') || document.getElementById('confirm-order-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:8px;"></div> Placing Order...';
+    }
 
-  const orderType   = document.querySelector('input[name="order_type"]:checked')?.value || 'Dine In';
-  const tableNumber = orderType === 'Dine In' ? document.getElementById('table-number').value : '';
+    const orderType   = document.querySelector('input[name="order_type"]:checked')?.value || 'Dine In';
+    const tableNumber = orderType === 'Dine In' ? (document.getElementById('table-number')?.value || '') : '';
 
-  if (orderType === 'Dine In' && !tableNumber) {
-    showToast('Please select a table number', 'warning');
-    btn.disabled = false;
-    btn.innerHTML = '✅ Confirm & Place Order';
-    return;
-  }
+    if (orderType === 'Dine In' && !tableNumber) {
+      showToast('Please select a table number', 'warning');
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '✅ Confirm & Place Order';
+      }
+      return;
+    }
 
   const payload = {
     customer_name:  document.getElementById('customer-name').value.trim(),
@@ -323,13 +415,16 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
     renderCart();
     document.getElementById('checkout-form').reset();
     showToast('🎉 Order placed successfully!', 'success');
-  } catch (err) {
-    showToast('Failed to place order. Try again.', 'error');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '✅ Confirm & Place Order';
-  }
-});
+    } catch (err) {
+      showToast('Failed to place order. Try again.', 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '✅ Confirm & Place Order';
+      }
+    }
+  });
+}
 
 document.getElementById('confirm-modal-close').addEventListener('click', () => {
   confirmModal.classList.remove('active');
@@ -454,11 +549,10 @@ function applyQRPreFill() {
   await fetchMenu();
 
   // Patch checkout button to apply QR pre-fill before opening
-  const originalCheckoutListener = () => {};
-  const checkoutBtn = document.getElementById('checkout-btn');
-  const originalClickHandler = checkoutBtn.onclick;
-  checkoutBtn.addEventListener('click', () => {
-    // Apply QR pre-fill after modal opens (next tick)
-    setTimeout(applyQRPreFill, 50);
-  }, true); // capture phase so it fires before the other listener
+  const chkBtn = document.getElementById('checkout-btn');
+  if (chkBtn) {
+    chkBtn.addEventListener('click', () => {
+      setTimeout(applyQRPreFill, 50);
+    }, true);
+  }
 })();
