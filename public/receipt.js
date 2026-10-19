@@ -37,7 +37,7 @@ function generateReceipt(order) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Receipt #${orderId} — CMS Canteen</title>
+  <title>Receipt #${orderId} — College Canteen</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -207,7 +207,7 @@ function generateReceipt(order) {
     <!-- Header -->
     <div class="receipt-header">
       <div class="receipt-logo">🍽️</div>
-      <div class="receipt-brand">CMS Canteen</div>
+      <div class="receipt-brand">College Canteen</div>
       <div class="receipt-tagline">School of Engineering & Technology</div>
       <div class="receipt-order-id">ORDER #${orderId}</div>
     </div>
