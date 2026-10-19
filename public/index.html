@@ -169,20 +169,32 @@
 
   <!-- Main Content -->
   <main class="page-wrapper">
-    <!-- Hero Section -->
+    <!-- Hero Section (Kadappa Cafe Poster Style) -->
     <section class="hero">
       <div class="container">
-        <span class="hero-emoji">🍛</span>
-        <h1>
-          <span class="gradient-text">College Canteen</span>
-        </h1>
-        <p>Fresh, affordable, and delicious food — prepared fresh every day for students and staff.</p>
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-lg" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
-            🍽️ Browse Menu
-          </button>
-          <a href="/order-status" class="btn btn-secondary btn-lg">📍 Track Order</a>
+        <div class="hero-grid">
+          <div>
+            <div class="text-eyebrow"><span>✨</span> AUTHENTIC FLAVOURS • CAMPUS CANTEEN</div>
+            <h1>
+              Traditional<br>Taste, <span class="gradient-text">Always Fresh</span>
+            </h1>
+            <p>Crispy dosas, hot masala chai, authentic meals, and quick snacks — prepared fresh every single day for students, faculty, and staff.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+                EXPLORE MENU →
+              </button>
+              <a href="/order-status" class="btn btn-secondary btn-lg">📍 TRACK ORDER</a>
+            </div>
+          </div>
+
+          <div class="hero-showcase">
+            <span class="hero-showcase-badge">⭐ CAMPUS FAVORITE</span>
+            <span class="hero-showcase-emoji">🍛</span>
+            <h3 class="hero-showcase-title">College Canteen Delights</h3>
+            <p class="hero-showcase-desc">Order online in seconds. Skip the cafeteria queues and pick up hot, delicious meals directly from the counter.</p>
+          </div>
         </div>
+
         <div class="hero-stats">
           <div class="hero-stat"><div class="val">50+</div><div class="lbl">Menu Items</div></div>
           <div class="hero-stat"><div class="val">5 Min</div><div class="lbl">Avg Wait Time</div></div>
@@ -191,6 +203,11 @@
         </div>
       </div>
     </section>
+
+    <!-- Kadappa Dotted Divider -->
+    <div class="container">
+      <div class="dotted-divider"></div>
+    </div>
 
     <!-- Menu Section -->
     <section id="menu-section" style="padding:2rem 0 4rem;">
