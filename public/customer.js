@@ -100,21 +100,36 @@ let menuListenerAttached = false;
 
 function renderMenu() {
   const cat   = state.activeCategory;
-  const query = state.searchQuery.toLowerCase();
+  const query = (state.searchQuery || '').toLowerCase().trim();
 
   const filtered = state.menu.filter(item => {
-    const matchCat   = cat === 'All' || item.category === cat;
-    const matchQuery = !query || item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query));
-    return matchCat && matchQuery && item.available;
+    if (!item.available) return false;
+    const matchQuery = !query ||
+      (item.name && item.name.toLowerCase().includes(query)) ||
+      (item.description && item.description.toLowerCase().includes(query)) ||
+      (item.category && item.category.toLowerCase().includes(query));
+
+    // When searching, search across all items so nothing is hidden by active category tab!
+    if (query) {
+      return matchQuery;
+    }
+    const matchCat = cat === 'All' || item.category === cat;
+    return matchCat;
   });
+
+  const clearBtn = document.getElementById('clear-search-btn');
+  if (clearBtn) {
+    if (query.length > 0) clearBtn.classList.remove('hidden');
+    else clearBtn.classList.add('hidden');
+  }
 
   const noResults = document.getElementById('menu-no-results');
   if (filtered.length === 0) {
     menuGrid.innerHTML = '';
-    noResults.classList.remove('hidden');
+    if (noResults) noResults.classList.remove('hidden');
     return;
   }
-  noResults.classList.add('hidden');
+  if (noResults) noResults.classList.add('hidden');
 
   menuGrid.innerHTML = filtered.map(item => {
     const imgUrl = getItemImage(item);
@@ -449,15 +464,62 @@ document.getElementById('category-filter').addEventListener('click', (e) => {
   renderMenu();
 });
 
-// ── Search ────────────────────────────────────────────────────
+// ── Search & Clear Handlers ───────────────────────────────────
+window.clearMenuSearch = function() {
+  const sInput = document.getElementById('menu-search');
+  if (sInput) sInput.value = '';
+  state.searchQuery = '';
+  state.activeCategory = 'All';
+  document.querySelectorAll('.category-btn').forEach(b => {
+    if (b.dataset.category === 'All') b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  renderMenu();
+  if (sInput) sInput.focus();
+};
+
 let searchTimer;
-document.getElementById('menu-search').addEventListener('input', (e) => {
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    state.searchQuery = e.target.value;
+const searchInput = document.getElementById('menu-search');
+if (searchInput) {
+  const onSearchChange = (val) => {
+    state.searchQuery = val;
     renderMenu();
-  }, 200);
-});
+  };
+
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => onSearchChange(e.target.value), 120);
+  });
+
+  searchInput.addEventListener('search', (e) => {
+    onSearchChange(e.target.value);
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      window.clearMenuSearch();
+      searchInput.blur();
+    }
+  });
+}
+
+// ── Search Trigger in Header ──────────────────────────────────
+const searchTriggerBtn = document.getElementById('search-trigger-btn');
+if (searchTriggerBtn) {
+  searchTriggerBtn.addEventListener('click', () => {
+    const sInput = document.getElementById('menu-search');
+    if (sInput) {
+      sInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => {
+        sInput.focus();
+        sInput.classList.add('search-highlight');
+        setTimeout(() => sInput.classList.remove('search-highlight'), 1800);
+      }, 350);
+    } else {
+      document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+}
 
 // ── QR Code Table Pre-fill ────────────────────────────────────
 function handleQRParams() {

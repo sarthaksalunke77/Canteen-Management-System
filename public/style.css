@@ -1307,13 +1307,27 @@ body.light-canteen-theme .form-control {
 
 .cc-search-input {
   background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 50px !important;
-  padding: 0.6rem 1.25rem !important;
+  padding: 0.65rem 1.25rem !important;
   width: 100% !important;
-  max-width: 320px !important;
+  max-width: 360px !important;
   color: #0f172a !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.25s ease !important;
+}
+
+.cc-search-input:focus {
+  border-color: #ff5722 !important;
+  box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  outline: none !important;
+}
+
+.cc-search-input.search-highlight {
+  border-color: #ff5722 !important;
+  box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.35), 0 4px 16px rgba(255, 87, 34, 0.2) !important;
+  transform: scale(1.02);
 }
 
 /* Food Grid & Cards */

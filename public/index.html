@@ -276,8 +276,9 @@
           </div>
 
           <!-- Search Bar -->
-          <div class="cc-search-wrapper" id="menu-search-wrapper">
-            <input class="form-control cc-search-input" id="menu-search" type="search" placeholder="🔍 Search menu items...">
+          <div class="cc-search-wrapper" id="menu-search-wrapper" style="position:relative;display:flex;align-items:center;max-width:380px;">
+            <input class="form-control cc-search-input" id="menu-search" type="search" placeholder="🔍 Search menu (e.g. Samosa, Chai, Dosa)..." style="padding-right:2.4rem;">
+            <button id="clear-search-btn" class="hidden" onclick="window.clearMenuSearch()" style="position:absolute;right:14px;background:none;border:none;cursor:pointer;color:#94a3b8;font-size:1.1rem;padding:0;line-height:1;" title="Clear search">✕</button>
           </div>
 
           <!-- Dynamic Food Cards Grid -->
@@ -288,10 +289,13 @@
           </div>
 
           <!-- Empty State -->
-          <div id="menu-no-results" class="hidden text-center cc-no-results">
+          <div id="menu-no-results" class="hidden text-center cc-no-results" style="padding:3rem 1.5rem;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;margin:1rem 0;">
             <p style="font-size:3rem;margin-bottom:0.5rem;">🔍</p>
-            <p class="font-semibold" style="font-size:1.15rem;color:#1e293b;">No items found</p>
-            <p style="color:#64748b;margin-top:0.25rem;">Try another keyword or category</p>
+            <p class="font-semibold" style="font-size:1.2rem;color:#1e293b;">No matching food items found</p>
+            <p style="color:#64748b;margin:0.35rem 0 1.25rem;">We couldn't find any dishes matching your search.</p>
+            <button class="btn btn-primary" onclick="window.clearMenuSearch()">
+              🔄 Show All Menu Items
+            </button>
           </div>
         </div>
 
